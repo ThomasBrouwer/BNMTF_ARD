@@ -2,9 +2,11 @@
 Tests for the BNMTF+ARD Variational Bayes algorithm.
 """
 
-import numpy, math, pytest, itertools
-from BNMTF_ARD.code.bnmtf_ard_vb import bnmtf_ard_vb
+import sys
+sys.path.append("./../../")
+from BNMTF_ARD.code.models.bnmtf_ard_vb import bnmtf_ard_vb
 
+import numpy, math, pytest, itertools
 
 """ Test constructor """
 def test_init():

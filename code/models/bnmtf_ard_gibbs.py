@@ -45,13 +45,13 @@ Finally, we can return the goodness of fit of the data using the quality(metric)
 """
 
 import sys
-sys.path.append("/home/tab43/Documents/Projects/libraries/")
-from kmeans_missing.code.kmeans import KMeans
+sys.path.append("./../../")
 
-from distributions.exponential import exponential_draw
-from distributions.gamma import gamma_draw, gamma_expectation
-from distributions.truncated_normal import TN_draw
-from distributions.truncated_normal_vector import TN_vector_draw
+from BNMTF_ARD.code.kmeans.kmeans import KMeans
+from BNMTF_ARD.code.distributions.exponential import exponential_draw
+from BNMTF_ARD.code.distributions.gamma import gamma_draw, gamma_expectation
+from BNMTF_ARD.code.distributions.truncated_normal import TN_draw
+from BNMTF_ARD.code.distributions.truncated_normal_vector import TN_vector_draw
 
 import numpy, itertools, math, time
    

@@ -49,20 +49,20 @@ Finally, we can return the goodness of fit of the data using the quality(metric)
 """
 
 import sys
-sys.path.append("/home/tab43/Documents/Projects/libraries/")
-from kmeans_missing.code.kmeans import KMeans
+sys.path.append("./../../")
 
-from distributions.gamma import gamma_draw, gamma_expectation, gamma_expectation_log
-from distributions.truncated_normal import TN_expectation, TN_variance
-from distributions.truncated_normal_vector import TN_vector_expectation, TN_vector_variance
-from distributions.exponential import exponential_draw
+from BNMTF_ARD.code.kmeans.kmeans import KMeans
+from BNMTF_ARD.code.distributions.gamma import gamma_expectation, gamma_expectation_log
+from BNMTF_ARD.code.distributions.truncated_normal import TN_expectation, TN_variance
+from BNMTF_ARD.code.distributions.truncated_normal_vector import TN_vector_expectation, TN_vector_variance
+from BNMTF_ARD.code.distributions.exponential import exponential_draw
 
 import numpy, itertools, math, scipy, time
    
 PERFORMANCE_METRICS = ['MSE','R^2','Rp']
 QUALITY_MEASURES = ['loglikelihood','BIC','AIC','MSE','ELBO']
 
-class bnmtf_vb_optimised:
+class bnmtf_ard_vb:
     def __init__(self,R,M,K,L,priors):
         ''' Initialise the class by checking whether all the parameters are correct. '''
         self.R = numpy.array(R,dtype=float)

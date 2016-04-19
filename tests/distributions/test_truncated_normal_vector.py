@@ -1,6 +1,10 @@
 """
 Test the class for Truncated Normal draws and expectations in truncated_normal_vector.py.
 """
+
+import sys
+sys.path.append("./../../")
+
 from BNMTF_ARD.code.distributions.truncated_normal_vector import TN_vector_draw, TN_vector_expectation, TN_vector_variance, TN_vector_mode
 from scipy.stats import norm
 import numpy

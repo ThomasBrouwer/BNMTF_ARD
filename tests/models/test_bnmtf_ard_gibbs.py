@@ -2,8 +2,11 @@
 Tests for the BNMTF+ARD Gibbs sampler.
 """
 
+import sys
+sys.path.append("./../../")
+from BNMTF_ARD.code.models.bnmtf_ard_gibbs import bnmtf_ard_gibbs
+
 import numpy, math, pytest, itertools
-from BNMTF_ARD.code.bnmtf_ard_gibbs import bnmtf_ard_gibbs
 
 
 """ Test constructor """
