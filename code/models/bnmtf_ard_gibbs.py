@@ -320,10 +320,6 @@ class bnmtf_ard_gibbs:
         
     ''' Functions for computing MSE, R^2 (coefficient of determination), Rp (Pearson correlation). '''
     def compute_MSE(self,M,R,R_pred):
-        print R
-        print R_pred
-        print M * (R-R_pred)
-        print M * (R-R_pred)**2
         return (M * (R-R_pred)**2).sum() / float(M.sum())
         
     def compute_R2(self,M,R,R_pred):
@@ -363,7 +359,7 @@ class bnmtf_ard_gibbs:
             return 0.
         
     def log_likelihood(self,expF,expS,expG,exptau):
-        # Return the likelihood of the data given the trained model's parameters
+        ''' Return the likelihood of the data given the trained model's parameters. '''
         explogtau = math.log(exptau)
         return self.size_Omega / 2. * ( explogtau - math.log(2*math.pi) ) \
              - exptau / 2. * (self.M*( self.R - self.triple_dot(expF,expS,expG.T) )**2).sum()

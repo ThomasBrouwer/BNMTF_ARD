@@ -116,13 +116,13 @@ class bnmtf_ard_vb:
         
         ''' First initialise the lambdaS[k,l], lambdaF[k], lambdaG[l]. '''
         self.alphaF, self.betaF = (self.alpha0 * numpy.ones(self.K) + self.I), (self.beta0 * numpy.ones(self.K) + self.I)
-        self.alphaG, self.betaG = (self.alpha0 * numpy.ones(self.L) + self.J), (self.beta0 * numpy.ones(self.L) + self.I)
-        self.alphaF, self.betaF = (self.alpha0 *  numpy.ones((self.K,self.L)) + 1.), (self.beta0 * numpy.ones((self.K,self.L)) + 1.)
+        self.alphaG, self.betaG = (self.alpha0 * numpy.ones(self.L) + self.J), (self.beta0 * numpy.ones(self.L) + self.J)
+        self.alphaS, self.betaS = (self.alpha0 *  numpy.ones((self.K,self.L)) + 1.), (self.beta0 * numpy.ones((self.K,self.L)) + 1.)
         
         ''' Initialise the expectations and variances for lambdaS, lambdaF, lambdaG. '''
-        self.exp_lambdaF, self.var_lambdaF = numpy.zeros(self.K), numpy.zeros(self.K)
-        self.exp_lambdaG, self.var_lambdaG = numpy.zeros(self.K), numpy.zeros(self.K)
-        self.exp_lambdaS, self.var_lambdaS = numpy.zeros((self.K,self.L)), numpy.zeros((self.K,self.L))
+        self.exp_lambdaF, self.exp_loglambdaF = numpy.zeros(self.K), numpy.zeros(self.K)
+        self.exp_lambdaG, self.exp_loglambdaG = numpy.zeros(self.L), numpy.zeros(self.L)
+        self.exp_lambdaS, self.exp_loglambdaS = numpy.zeros((self.K,self.L)), numpy.zeros((self.K,self.L))
         
         for k in xrange(0,self.K):
             self.update_exp_lambdaF(k)
@@ -131,20 +131,20 @@ class bnmtf_ard_vb:
         for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
             self.update_exp_lambdaS(k,l)
         
-        ''' Then initialise muS, tauS, exp_S '''
+        ''' Then initialise muS, tauS. '''
         self.muS, self.tauS = 1. / self.exp_lambdaS, numpy.ones((self.K,self.L))
         if init == 'random' or init == 'kmeans':
             for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)): 
                 self.muS[k,l] = exponential_draw(self.exp_lambdaS[k,l])
                 
-        ''' Then initialise muF/G, tauF/G, exp_F/G. ''' 
-        self.muF, self.tauF = 1. / self.exp_lambdaF, numpy.ones(self.K)
-        self.muG, self.tauG = 1. / self.exp_lambdaG, numpy.ones(self.L)
+        ''' Then initialise muF/G, tauF/G. ''' 
+        self.muF, self.tauF = numpy.array([1. / self.exp_lambdaF for i in range(0,self.I)]), numpy.ones((self.I,self.K))
+        self.muG, self.tauG = numpy.array([1. / self.exp_lambdaG for j in range(0,self.J)]), numpy.ones((self.J,self.L))
         if init == 'random':
-            for k in xrange(0,self.K):
-                self.muF[k] = exponential_draw(self.exp_lambdaF[k])
-            for l in xrange(0,self.L):
-                self.muG[l] = exponential_draw(self.exp_lambdaG[l])
+            for i,k in itertools.product(xrange(0,self.I),xrange(0,self.K)):
+                self.muF[i,k] = exponential_draw(self.exp_lambdaF[k])
+            for j,l in itertools.product(xrange(0,self.J),xrange(0,self.L)):
+                self.muG[j,l] = exponential_draw(self.exp_lambdaG[l])
         elif init == 'kmeans':
             print "Initialising F using KMeans."
             kmeansF = KMeans(self.R,self.M,self.K)
@@ -371,8 +371,8 @@ class bnmtf_ard_vb:
         self.var_G[:,l] = TN_vector_variance(self.muG[:,l],self.tauG[:,l])
 
 
-    # Compute the expectation of U and V, and use it to predict missing values
     def predict(self,M_pred):
+        ''' Compute the performance of predicting missing values. '''
         R_pred = self.triple_dot(self.exp_F,self.exp_S,self.exp_G.T)
         MSE = self.compute_MSE(M_pred,self.R,R_pred)
         R2 = self.compute_R2(M_pred,self.R,R_pred)    
@@ -380,7 +380,7 @@ class bnmtf_ard_vb:
         return {'MSE':MSE,'R^2':R2,'Rp':Rp}
         
         
-    # Functions for computing MSE, R^2 (coefficient of determination), Rp (Pearson correlation)
+    ''' Functions for computing MSE, R^2 (coefficient of determination), Rp (Pearson correlation). '''
     def compute_MSE(self,M,R,R_pred):
         return (M * (R-R_pred)**2).sum() / float(M.sum())
         
@@ -399,7 +399,7 @@ class bnmtf_ard_vb:
         return covariance / float(math.sqrt(variance_real)*math.sqrt(variance_pred))
         
         
-    # Functions for model selection, measuring the goodness of fit vs model complexity
+    ''' Functions for model selection, measuring the goodness of fit vs model complexity. '''
     def quality(self,metric):
         assert metric in ['loglikelihood','BIC','AIC','MSE','ELBO'], 'Unrecognised metric for model quality: %s.' % metric
         log_likelihood = self.log_likelihood()
@@ -418,6 +418,6 @@ class bnmtf_ard_vb:
             return self.elbo()
         
     def log_likelihood(self):
-        # Return the likelihood of the data given the trained model's parameters
+        ''' Return the likelihood of the data given the trained model's parameters. '''
         return self.size_Omega / 2. * ( self.exp_logtau - math.log(2*math.pi) ) \
              - self.exp_tau / 2. * (self.M*( self.R - self.triple_dot(self.exp_F,self.exp_S,self.exp_G.T) )**2).sum()
