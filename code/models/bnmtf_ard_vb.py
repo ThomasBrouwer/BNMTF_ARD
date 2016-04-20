@@ -49,7 +49,7 @@ Finally, we can return the goodness of fit of the data using the quality(metric)
 """
 
 import sys
-sys.path.append("./../../")
+sys.path.append("/home/tab43/Documents/Projects/libraries/")
 
 from BNMTF_ARD.code.kmeans.kmeans import KMeans
 from BNMTF_ARD.code.distributions.gamma import gamma_expectation, gamma_expectation_log

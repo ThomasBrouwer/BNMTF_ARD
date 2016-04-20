@@ -45,7 +45,7 @@ Finally, we can return the goodness of fit of the data using the quality(metric)
 """
 
 import sys
-sys.path.append("./../../")
+sys.path.append("/home/tab43/Documents/Projects/libraries/")
 
 from BNMTF_ARD.code.kmeans.kmeans import KMeans
 from BNMTF_ARD.code.distributions.exponential import exponential_draw
@@ -320,6 +320,10 @@ class bnmtf_ard_gibbs:
         
     ''' Functions for computing MSE, R^2 (coefficient of determination), Rp (Pearson correlation). '''
     def compute_MSE(self,M,R,R_pred):
+        print R
+        print R_pred
+        print M * (R-R_pred)
+        print M * (R-R_pred)**2
         return (M * (R-R_pred)**2).sum() / float(M.sum())
         
     def compute_R2(self,M,R,R_pred):
@@ -341,8 +345,8 @@ class bnmtf_ard_gibbs:
     def quality(self,metric,burn_in,thinning):
         assert metric in QUALITY_MEASURES, 'Unrecognised metric for model quality: %s.' % metric
         
-        (expF,expS,expG,exptau) = self.approx_expectation(burn_in,thinning)
-        log_likelihood = self.log_likelihood(expF,expS,expG,exptau)
+        (exp_tau,exp_F,exp_S,exp_G,_,_,_) = self.approx_expectation(burn_in,thinning)
+        log_likelihood = self.log_likelihood(exp_F,exp_S,exp_G,exp_tau)
         
         if metric == 'loglikelihood':
             return log_likelihood
@@ -353,7 +357,7 @@ class bnmtf_ard_gibbs:
             # -2*loglikelihood + 2*no. free parameters
             return - 2 * log_likelihood + 2 * (self.I*self.K+self.K*self.L+self.J*self.L)
         elif metric == 'MSE':
-            R_pred = self.triple_dot(expF,expS,expG.T)
+            R_pred = self.triple_dot(exp_F,exp_S,exp_G.T)
             return self.compute_MSE(self.M,self.R,R_pred)
         elif metric == 'ELBO':
             return 0.

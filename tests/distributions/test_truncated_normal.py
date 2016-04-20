@@ -3,7 +3,7 @@ Test the class for Truncated Normal draws and expectations in truncated_normal.p
 """
 
 import sys
-sys.path.append("./../../")
+sys.path.append("/home/tab43/Documents/Projects/libraries/")
 
 from BNMTF_ARD.code.distributions.truncated_normal import TN_draw, TN_expectation, TN_variance, TN_mode
 from scipy.stats import norm

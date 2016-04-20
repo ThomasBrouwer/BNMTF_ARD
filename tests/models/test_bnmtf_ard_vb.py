@@ -3,7 +3,7 @@ Tests for the BNMTF+ARD Variational Bayes algorithm.
 """
 
 import sys
-sys.path.append("./../../")
+sys.path.append("/home/tab43/Documents/Projects/libraries/")
 from BNMTF_ARD.code.models.bnmtf_ard_vb import bnmtf_ard_vb
 
 import numpy, math, pytest, itertools

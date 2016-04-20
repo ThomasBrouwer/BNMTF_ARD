@@ -3,7 +3,7 @@ Test the class for Gamma draws and expectations in gamma.py.
 """
 
 import sys
-sys.path.append("./../../")
+sys.path.append("/home/tab43/Documents/Projects/libraries/")
 
 from BNMTF_ARD.code.distributions.gamma import gamma_draw, gamma_expectation, gamma_expectation_log, gamma_mode
 
