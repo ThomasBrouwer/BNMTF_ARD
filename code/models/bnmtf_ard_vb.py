@@ -223,7 +223,7 @@ class bnmtf_ard_vb:
             ''' Store the new draws, and the time it took. '''
             self.all_exp_lambdaF[it] = numpy.copy(self.exp_lambdaF)
             self.all_exp_lambdaG[it] = numpy.copy(self.exp_lambdaG)
-            self.all_exp_tau.append(self.exp_tau)
+            self.all_exp_tau[it] = self.exp_tau
             
             time_iteration = time.time()
             self.all_times.append(time_iteration-time_start)            
@@ -231,39 +231,40 @@ class bnmtf_ard_vb:
         
     def elbo(self):
         ''' Compute the ELBO. '''
-        p_R = self.size_Omega / 2. * ( self.exp_logtau - math.log(2*math.pi) ) - self.exp_tau / 2. * self.exp_square_diff()
+        self.p_R = self.size_Omega / 2. * ( self.exp_logtau - math.log(2*math.pi) ) - self.exp_tau / 2. * self.exp_square_diff()
         
-        p_tau = self.alphaR * math.log(self.betaR) - scipy.special.gammaln(self.alphaR) \
-                + (self.alphaR - 1.)*self.exp_logtau - self.betaR * self.exp_tau
-        p_F = self.I * self.exp_loglambdaF.sum() - ( self.exp_lambdaF * self.exp_F ).sum()
-        p_G = self.J * self.exp_loglambdaF.sum() - ( self.exp_lambdaG * self.exp_G ).sum()
-        p_S = self.exp_loglambdaS.sum() - ( self.exp_lambdaS * self.exp_S ).sum()
-        p_lambdaF = self.I * self.alpha0 * math.log(self.beta0) - self.I * scipy.special.gammaln(self.alpha0) \
-                    + (self.alpha0 - 1.)*self.exp_loglambdaF.sum() - self.beta0 * self.exp_lambdaF.sum()
-        p_lambdaG = self.J * self.alpha0 * math.log(self.beta0) - self.J * scipy.special.gammaln(self.alpha0) \
-                    + (self.alpha0 - 1.)*self.exp_loglambdaG.sum() - self.beta0 * self.exp_lambdaG.sum()
-        p_lambdaS = self.K * self.L * self.alpha0 * math.log(self.beta0) - self.K * self.L * scipy.special.gammaln(self.alpha0) \
-                    + (self.alpha0 - 1.)*self.exp_loglambdaS.sum() - self.beta0 * self.exp_lambdaS.sum()
+        self.p_tau = self.alphaR * math.log(self.betaR) - scipy.special.gammaln(self.alphaR) \
+                     + (self.alphaR - 1.)*self.exp_logtau - self.betaR * self.exp_tau
+        self.p_F = self.I * self.exp_loglambdaF.sum() - ( self.exp_lambdaF * self.exp_F ).sum()
+        self.p_G = self.J * self.exp_loglambdaG.sum() - ( self.exp_lambdaG * self.exp_G ).sum()
+        self.p_S = self.exp_loglambdaS.sum() - ( self.exp_lambdaS * self.exp_S ).sum()
+        self.p_lambdaF = self.K * self.alpha0 * math.log(self.beta0) - self.K * scipy.special.gammaln(self.alpha0) \
+                         + (self.alpha0 - 1.)*self.exp_loglambdaF.sum() - self.beta0 * self.exp_lambdaF.sum()
+        self.p_lambdaG = self.L * self.alpha0 * math.log(self.beta0) - self.L * scipy.special.gammaln(self.alpha0) \
+                         + (self.alpha0 - 1.)*self.exp_loglambdaG.sum() - self.beta0 * self.exp_lambdaG.sum()
+        self.p_lambdaS = self.K * self.L * self.alpha0 * math.log(self.beta0) - self.K * self.L * scipy.special.gammaln(self.alpha0) \
+                         + (self.alpha0 - 1.)*self.exp_loglambdaS.sum() - self.beta0 * self.exp_lambdaS.sum()
         
-        q_tau = - self.alphaR_s * math.log(self.betaR_s) + scipy.special.gammaln(self.alphaR_s) \
-                - (self.alphaR_s - 1.)*self.exp_logtau + self.betaR_s * self.exp_tau
-        q_F = - .5*numpy.log(self.tauF).sum() + self.I*self.K/2.*math.log(2*math.pi) \
-              + numpy.log(0.5*scipy.special.erfc(-self.muF*numpy.sqrt(self.tauF)/math.sqrt(2))).sum() \
-              + ( self.tauF / 2. * ( self.var_F + (self.exp_F - self.muF)**2 ) ).sum()  
-        q_G = - .5*numpy.log(self.tauG).sum() + self.J*self.L/2.*math.log(2*math.pi) \
-              + numpy.log(0.5*scipy.special.erfc(-self.muG*numpy.sqrt(self.tauG)/math.sqrt(2))).sum() \
-              + ( self.tauG / 2. * ( self.var_G + (self.exp_G - self.muG)**2 ) ).sum()      
-        q_S = - .5*numpy.log(self.tauS).sum() + self.K*self.L/2.*math.log(2*math.pi) \
-              + numpy.log(0.5*scipy.special.erfc(-self.muS*numpy.sqrt(self.tauS)/math.sqrt(2))).sum() \
-              + ( self.tauS / 2. * ( self.var_S + (self.exp_S - self.muS)**2 ) ).sum()
-        q_lambdaF = ( - self.alphaF * scipy.log(self.betaF) + scipy.special.gammaln(self.alphaF) \
-                      - (self.alphaF - 1.)*self.exp_loglambdaF + self.betaF * self.exp_lambdaF ).sum()
-        q_lambdaG = ( - self.alphaG * scipy.log(self.betaG) + scipy.special.gammaln(self.alphaG) \
-                      - (self.alphaG - 1.)*self.exp_loglambdaG + self.betaG * self.exp_lambdaG ).sum()
-        q_lambdaS = ( - self.alphaS * scipy.log(self.betaS) + scipy.special.gammaln(self.alphaS) \
-                      - (self.alphaS - 1.)*self.exp_loglambdaS + self.betaS * self.exp_lambdaS ).sum()
+        self.q_tau = self.alphaR_s * math.log(self.betaR_s) - scipy.special.gammaln(self.alphaR_s) \
+                     + (self.alphaR_s - 1.)*self.exp_logtau - self.betaR_s * self.exp_tau
+        self.q_F = 1./2.*numpy.log(self.tauF).sum() - self.I*self.K/2.*math.log(2*math.pi) \
+                   - numpy.log(0.5*scipy.special.erfc(-self.muF*numpy.sqrt(self.tauF)/math.sqrt(2))).sum() \
+                   - ( self.tauF / 2. * ( self.var_F + (self.exp_F - self.muF)**2 ) ).sum()
+        self.q_G = .5*numpy.log(self.tauG).sum() - self.J*self.L/2.*math.log(2*math.pi) \
+                   - numpy.log(0.5*scipy.special.erfc(-self.muG*numpy.sqrt(self.tauG)/math.sqrt(2))).sum() \
+                   - ( self.tauG / 2. * ( self.var_G + (self.exp_G - self.muG)**2 ) ).sum()      
+        self.q_S = .5*numpy.log(self.tauS).sum() - self.K*self.L/2.*math.log(2*math.pi) \
+                   - numpy.log(0.5*scipy.special.erfc(-self.muS*numpy.sqrt(self.tauS)/math.sqrt(2))).sum() \
+                   - ( self.tauS / 2. * ( self.var_S + (self.exp_S - self.muS)**2 ) ).sum()
+        self.q_lambdaF = ( self.alphaF * scipy.log(self.betaF) - scipy.special.gammaln(self.alphaF) + \
+                           (self.alphaF - 1.)*self.exp_loglambdaF - self.betaF * self.exp_lambdaF ).sum()
+        self.q_lambdaG = ( self.alphaG * scipy.log(self.betaG) - scipy.special.gammaln(self.alphaG) + \
+                           (self.alphaG - 1.)*self.exp_loglambdaG - self.betaG * self.exp_lambdaG ).sum()
+        self.q_lambdaS = ( self.alphaS * scipy.log(self.betaS) - scipy.special.gammaln(self.alphaS) + \
+                           (self.alphaS - 1.)*self.exp_loglambdaS - self.betaS * self.exp_lambdaS ).sum()
         
-        return p_R + p_tau + p_F + p_G + p_S + p_lambdaF + p_lambdaG + p_lambdaS + q_tau + q_F + q_G + q_S + q_lambdaF + q_lambdaG + q_lambdaS
+        return self.p_R + self.p_tau + self.p_F + self.p_G + self.p_S + self.p_lambdaF + self.p_lambdaG + self.p_lambdaS \
+               - self.q_tau - self.q_F - self.q_G - self.q_S - self.q_lambdaF - self.q_lambdaG - self.q_lambdaS
 
 
     def triple_dot(self,M1,M2,M3):
@@ -326,7 +327,7 @@ class bnmtf_ard_vb:
         diff_term = (self.M * ( (self.R-self.triple_dot(self.exp_F,self.exp_S,self.exp_G.T)+numpy.outer(self.exp_F[:,k],numpy.dot(self.exp_S[k],self.exp_G.T)) ) * numpy.dot(self.exp_S[k],self.exp_G.T) )).sum(axis=1)        
         cov_term = ( self.M * ( ( numpy.dot(self.exp_S[k]*numpy.dot(self.exp_F,self.exp_S), self.var_G.T) - numpy.outer(self.exp_F[:,k], numpy.dot( self.exp_S[k]**2, self.var_G.T )) ) ) ).sum(axis=1)
         self.muF[:,k] = 1./self.tauF[:,k] * (
-            - self.lambdaF[:,k]
+            - self.exp_lambdaF[k]
             + self.exp_tau * diff_term
             - self.exp_tau * cov_term
         ) 
@@ -343,7 +344,7 @@ class bnmtf_ard_vb:
         cov_term_G = (self.M * numpy.outer( self.exp_F[:,k] * ( numpy.dot(self.exp_F,self.exp_S[:,l]) - self.exp_F[:,k]*self.exp_S[k,l] ), self.var_G[:,l] )).sum()
         cov_term_F = (self.M * numpy.outer( self.var_F[:,k], self.exp_G[:,l]*(numpy.dot(self.exp_S[k],self.exp_G.T) - self.exp_S[k,l]*self.exp_G[:,l]) )).sum()        
         self.muS[k,l] = 1./self.tauS[k,l] * (
-            - self.lambdaS[k,l] 
+            - self.exp_lambdaS[k,l] 
             + self.exp_tau * diff_term
             - self.exp_tau * cov_term_G
             - self.exp_tau * cov_term_F
@@ -360,8 +361,8 @@ class bnmtf_ard_vb:
         
         diff_term = (self.M * ( (self.R-self.triple_dot(self.exp_F,self.exp_S,self.exp_G.T)+numpy.outer(numpy.dot(self.exp_F,self.exp_S[:,l]), self.exp_G[:,l]) ).T * numpy.dot(self.exp_F,self.exp_S[:,l]) ).T ).sum(axis=0)
         cov_term = (self.M * ( numpy.dot(self.var_F, (self.exp_S[:,l]*numpy.dot(self.exp_S,self.exp_G.T).T).T) - numpy.outer(numpy.dot(self.var_F,self.exp_S[:,l]**2), self.exp_G[:,l]) )).sum(axis=0)
-        self.muG[:,l] = 1./self.tau_G[:,l] * (
-            - self.lambdaG[:,l] 
+        self.muG[:,l] = 1./self.tauG[:,l] * (
+            - self.exp_lambdaG[l] 
             + self.exp_tau * diff_term
             - self.exp_tau * cov_term
         )
@@ -407,10 +408,10 @@ class bnmtf_ard_vb:
             return log_likelihood
         elif metric == 'BIC':
             # -2*loglikelihood + (no. free parameters * log(no data points))
-            return - 2 * log_likelihood + (self.I*self.K+self.K*self.L+self.J*self.L) * math.log(self.size_Omega)
+            return - 2 * log_likelihood + (self.I*self.K+self.K + 2*self.K*self.L + self.J*self.L+self.L) * math.log(self.size_Omega)
         elif metric == 'AIC':
             # -2*loglikelihood + 2*no. free parameters
-            return - 2 * log_likelihood + 2 * (self.I*self.K+self.K*self.L+self.J*self.L)
+            return - 2 * log_likelihood + 2 * (self.I*self.K+self.K + 2*self.K*self.L + self.J*self.L+self.L)
         elif metric == 'MSE':
             R_pred = self.triple_dot(self.exp_F,self.exp_S,self.exp_G.T)
             return self.compute_MSE(self.M,self.R,R_pred)
