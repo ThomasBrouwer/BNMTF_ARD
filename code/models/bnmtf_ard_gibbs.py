@@ -11,9 +11,10 @@ We expect the following arguments:
     
 Initialisation can be done by running the initialise() function, with argument
 init. Options (default 'kmeans'):
-- 'random' : draw values randomly from the model assumption distributions
-- 'exp' : use the expectation of the model assumption distributions
-- 'kmeans': use K-means clustering on the rows of R (+0.2) to initialise F, and similarly on columns of R for G. Initialise the rest randomly.
+- 'random' : Draw values randomly from the model assumption distributions
+- 'exp'    : Use the expectation of the model assumption distributions
+- 'kmeans' : Use K-means clustering on the rows of R (+0.2) to initialise F, and similarly on columns of R for G. 
+             Initialise S randomly, and the lambdas using expectation.
 
 Usage of class:
     BNMTF = bnmtf_ard_gibbs(R,M,K,L,priors)
@@ -111,7 +112,7 @@ class bnmtf_ard_gibbs:
         self.lambdaS = self.alpha0 / self.beta0 * numpy.ones((self.K,self.L)) 
         self.lambdaF = self.alpha0 / self.beta0 * numpy.ones(self.K)
         self.lambdaG = self.alpha0 / self.beta0 * numpy.ones(self.L)
-        if init == 'random' or init == 'kmeans':
+        if init == 'random': # or init == 'kmeans':
             for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
                 self.lambdaS[k,l] = gamma_draw(self.alpha0,self.beta0)
             for k in xrange(0,self.K):

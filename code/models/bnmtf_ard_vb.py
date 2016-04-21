@@ -103,13 +103,13 @@ class bnmtf_ard_vb:
 
     def initialise(self,init='kmeans'):
         ''' Initialise the matrices F, S, G, and lambda parameters.
-            Options are:
-            - 'random' : draw values randomly from the model assumption distributions
-            - 'exp' : use the expectation of the model assumption distributions
-            - 'kmeans': use K-means clustering on the rows of R (+0.2) to initialise F, and similarly on columns of R for G. Initialise S randomly.
             The tau parameters for F, S, G, get initialised to 1.
             The alpha and beta parameters to the lambda get initialised to alpha0 + (I or J or 1), and beta0 + (I or J or 1). So a peak at lambda = 1.
             The tau parameter for R gets initialised using the model updates.
+            Options for muF, muS, muG:
+            - 'random' : draw values randomly from the model assumption distributions
+            - 'exp' : use the expectation of the model assumption distributions
+            - 'kmeans': use K-means clustering on the rows of R (+0.2) to initialise F, and similarly on columns of R for G. Initialise S randomly.
         '''
         
         assert init in ['random','exp','kmeans'], "Unknown initialisation option: %s. Should be 'random', 'exp', or 'kmeans." % init
@@ -179,7 +179,7 @@ class bnmtf_ard_vb:
         ''' Run the variational inference for the specified number of iterations. '''
         self.all_exp_tau = numpy.zeros(iterations)
         self.all_exp_lambdaF = numpy.zeros((iterations,self.K))   
-        self.all_exp_lambdaG = numpy.zeros((iterations,self.L)) 
+        self.all_exp_lambdaG = numpy.zeros((iterations,self.L))
         
         self.all_times = [] # to plot performance against time     
         self.all_performances = {} # for plotting convergence of metrics
