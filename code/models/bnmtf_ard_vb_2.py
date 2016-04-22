@@ -85,57 +85,13 @@ class bnmtf_ard_vb_2(bnmtf_ard_vb_1):
         self.update_exp_tau()
         
         
-    def run(self,iterations):
-        ''' Run the variational inference for the specified number of iterations. '''
-        self.all_exp_tau = numpy.zeros(iterations)
-        self.all_exp_lambdaF = numpy.zeros((iterations,self.K))   
-        self.all_exp_lambdaG = numpy.zeros((iterations,self.L))
+    """ Methods for updating all of F, S, G, tau. """
+    def run_S(self):
+        ''' Update lambdaS and S. '''
+        for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
+            self.update_S(k,l)
+            self.update_exp_S(k,l)   
         
-        self.all_times = [] # to plot performance against time     
-        self.all_performances = {} # for plotting convergence of metrics
-        for metric in PERFORMANCE_METRICS:
-            self.all_performances[metric] = []
-        
-        time_start = time.time()
-        for it in range(0,iterations): 
-            ''' Update S. '''
-            for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
-                self.update_S(k,l)
-                self.update_exp_S(k,l)
-                
-            ''' Update lambdaF and F. '''
-            for k in range(0,self.K):
-                self.update_lambdaF(k)
-                self.update_exp_lambdaF(k)
-                self.update_F(k)
-                self.update_exp_F(k)
-                
-            ''' Update lambdaG and G. '''
-            for l in range(0,self.L):
-                self.update_lambdaG(l)
-                self.update_exp_lambdaG(l)
-                self.update_G(l)
-                self.update_exp_G(l)
-                
-            ''' Update tau. '''
-            self.update_tau()
-            self.update_exp_tau()
-            
-            ''' Compute the performances of this iteration's draws, and print them. '''
-            perf, elbo = self.predict(self.M), self.elbo()
-            for metric in PERFORMANCE_METRICS:
-                self.all_performances[metric].append(perf[metric])
-                
-            print "Iteration %s. ELBO: %s. MSE: %s. R^2: %s. Rp: %s." % (it+1,elbo,perf['MSE'],perf['R^2'],perf['Rp'])
-                        
-            ''' Store the new draws, and the time it took. '''
-            self.all_exp_lambdaF[it] = numpy.copy(self.exp_lambdaF)
-            self.all_exp_lambdaG[it] = numpy.copy(self.exp_lambdaG)
-            self.all_exp_tau[it] = self.exp_tau
-            
-            time_iteration = time.time()
-            self.all_times.append(time_iteration-time_start)      
-            
         
     def elbo(self):
         ''' Compute the ELBO. '''

@@ -174,8 +174,7 @@ class bnmtf_ard_vb_1(object):
             self.update_exp_G(l)
             
         ''' Finally, initialise tau using the updates. '''
-        self.update_tau()
-        self.update_exp_tau()
+        self.run_tau()
         
         
     def run(self,iterations):
@@ -191,30 +190,11 @@ class bnmtf_ard_vb_1(object):
         
         time_start = time.time()
         for it in range(0,iterations): 
-            ''' Update lambdaS and S. '''
-            for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
-                self.update_lambdaS(k,l)
-                self.update_exp_lambdaS(k,l)
-                self.update_S(k,l)
-                self.update_exp_S(k,l)
-                
-            ''' Update lambdaF and F. '''
-            for k in range(0,self.K):
-                self.update_lambdaF(k)
-                self.update_exp_lambdaF(k)
-                self.update_F(k)
-                self.update_exp_F(k)
-                
-            ''' Update lambdaG and G. '''
-            for l in range(0,self.L):
-                self.update_lambdaG(l)
-                self.update_exp_lambdaG(l)
-                self.update_G(l)
-                self.update_exp_G(l)
-                
-            ''' Update tau. '''
-            self.update_tau()
-            self.update_exp_tau()
+            ''' Update F, S, G, tau. '''
+            self.run_S()
+            self.run_F()
+            self.run_G()
+            self.run_tau()
             
             ''' Compute the performances of this iteration's draws, and print them. '''
             perf, elbo = self.predict(self.M), self.elbo()
@@ -229,7 +209,38 @@ class bnmtf_ard_vb_1(object):
             self.all_exp_tau[it] = self.exp_tau
             
             time_iteration = time.time()
-            self.all_times.append(time_iteration-time_start)            
+            self.all_times.append(time_iteration-time_start)  
+            
+            
+    """ Methods for updating all of F, S, G, tau. """
+    def run_F(self):
+        ''' Update lambdaF and F. '''
+        for k in range(0,self.K):
+            self.update_lambdaF(k)
+            self.update_exp_lambdaF(k)
+            self.update_F(k)
+            self.update_exp_F(k)
+        
+    def run_S(self):
+        ''' Update lambdaS and S. '''
+        for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
+            self.update_lambdaS(k,l)
+            self.update_exp_lambdaS(k,l)
+            self.update_S(k,l)
+            self.update_exp_S(k,l)   
+        
+    def run_G(self):
+        ''' Update lambdaG and G. '''
+        for l in range(0,self.L):
+            self.update_lambdaG(l)
+            self.update_exp_lambdaG(l)
+            self.update_G(l)
+            self.update_exp_G(l)
+    
+    def run_tau(self):
+        ''' Update tau. '''
+        self.update_tau()
+        self.update_exp_tau()
             
         
     def elbo(self):

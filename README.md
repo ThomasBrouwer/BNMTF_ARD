@@ -17,10 +17,6 @@ The variations are:
 1. Exponential priors over individual entries in S, with parameter lambdaSkl (element-wise ARD)
 2. Exponential priors over individual entries in S, with parameter lambdaFk*lambdaGl (shared ARD)
 3. Exponential priors over individual entries in S, with parameter lambdaS (no ARD)
-We found that model TODO gives the best sparsity:
-- In model 1 it is kind of possible to find the active factors k and l, but not super obvious (1/lambda of 0.4 for active versus 0.2 for inactive).
-- TODO
-- TODO
 
 The model automatically chooses the correct number of components K (rows) and L (columns), by pushing unused components towards 0:
 - If sum_i Fik = 0, the posterior over lambdaFk has a peak at a very high value, so lambdaFk gets a high value.
