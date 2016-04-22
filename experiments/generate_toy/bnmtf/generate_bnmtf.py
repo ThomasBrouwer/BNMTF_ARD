@@ -64,9 +64,9 @@ if __name__ == "__main__":
     I,J,K,L = 100, 80, 5, 5
     fraction_unknown = 0.1
     alpha, beta = 1., 1.
-    lambdaF = numpy.ones((I,K))
-    lambdaS = numpy.ones((K,L))
-    lambdaG = numpy.ones((J,L))
+    lambdaF = numpy.ones((I,K))/2.
+    lambdaS = numpy.ones((K,L))/2.
+    lambdaG = numpy.ones((J,L))/2.
     tau = alpha / beta
     
     (F,S,G,tau,true_R,R) = generate_dataset(I,J,K,L,lambdaF,lambdaS,lambdaG,tau)
@@ -84,5 +84,5 @@ if __name__ == "__main__":
     
     print "Mean R: %s. Variance R: %s. Min R: %s. Max R: %s." % (numpy.mean(R),numpy.var(R),R.min(),R.max())
     fig = plt.figure()
-    plt.hist(R.flatten(),bins=range(0,int(R.max())+1))
+    plt.hist(R.flatten(),bins=range(0,int(R.max())+1,10))
     plt.show()

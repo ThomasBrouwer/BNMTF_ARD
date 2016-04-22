@@ -98,6 +98,11 @@ class bnmtf_ard_vb_2(bnmtf_ard_vb_1):
         
         time_start = time.time()
         for it in range(0,iterations): 
+            ''' Update S. '''
+            for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
+                self.update_S(k,l)
+                self.update_exp_S(k,l)
+                
             ''' Update lambdaF and F. '''
             for k in range(0,self.K):
                 self.update_lambdaF(k)
@@ -111,11 +116,6 @@ class bnmtf_ard_vb_2(bnmtf_ard_vb_1):
                 self.update_exp_lambdaG(l)
                 self.update_G(l)
                 self.update_exp_G(l)
-                
-            ''' Update S. '''
-            for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
-                self.update_S(k,l)
-                self.update_exp_S(k,l)
                 
             ''' Update tau. '''
             self.update_tau()
