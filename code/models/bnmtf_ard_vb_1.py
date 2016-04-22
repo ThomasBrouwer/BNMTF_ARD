@@ -1,5 +1,8 @@
 """
 Variational Bayesian inference for BNMTF, with ARD.
+This is model 1: 
+- ARD per factor on F, G.
+- Element-wise ARD on S.
 
 We expect the following arguments:
 - R, the matrix
@@ -62,7 +65,7 @@ import numpy, itertools, math, scipy, time
 PERFORMANCE_METRICS = ['MSE','R^2','Rp']
 QUALITY_MEASURES = ['loglikelihood','BIC','AIC','MSE','ELBO']
 
-class bnmtf_ard_vb:
+class bnmtf_ard_vb_1(object):
     def __init__(self,R,M,K,L,priors):
         ''' Initialise the class by checking whether all the parameters are correct. '''
         self.R = numpy.array(R,dtype=float)
