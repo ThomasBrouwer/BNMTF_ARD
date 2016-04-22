@@ -1,15 +1,15 @@
 """
 Variational Bayesian inference for BNMTF, with ARD.
-This is model 3: 
+This is model 2: 
 - ARD per factor on F, G.
-- No ARD on S, regular Exp prior.
+- Skl ~ Exp(lambdaFk*lambdaGl)
 
 We expect the following arguments:
 - R, the matrix
 - M, the mask matrix indicating observed values (1) and unobserved ones (0)
 - K, the maximum number of row clusters
 - L, the maximum number of column clusters
-- priors = { 'alphaR' : alphaR, 'betaR' : betaR, 'alpha0' : alpha0, 'beta0' : beta0, 'lambdaS' : lambdaS }
+- priors = { 'alphaR' : alphaR, 'betaR' : betaR, 'alpha0' : alpha0, 'beta0' : beta0 }
     a dictionary defining the priors over tau, F, S, G.
     
 INITIALISATION
@@ -62,21 +62,20 @@ import numpy, itertools, math, scipy, time
 PERFORMANCE_METRICS = ['MSE','R^2','Rp']
 QUALITY_MEASURES = ['loglikelihood','BIC','AIC','MSE','ELBO']
 
-class bnmtf_ard_vb_3(bnmtf_ard_vb_1):
+class bnmtf_ard_vb_2(bnmtf_ard_vb_1):
     def __init__(self,R,M,K,L,priors):
-        super(bnmtf_ard_vb_3,self).__init__(R,M,K,L,priors)
-        self.lambdaS = priors['lambdaS']
+        super(bnmtf_ard_vb_2,self).__init__(R,M,K,L,priors)
            
-           
+
     def initialise(self,init='kmeans'):
         ''' Use the initialisation of Model 1, but then overwrite it for S. '''
-        super(bnmtf_ard_vb_3,self).initialise(init)
+        super(bnmtf_ard_vb_2,self).initialise(init)
         
         self.alphaS, self.betaS, self.exp_lambdaS, self.exp_loglambdaS = None, None, None, None        
-        self.muS, self.tauS = 1. / self.lambdaS * numpy.ones((self.K,self.L)), numpy.ones((self.K,self.L))
+        self.muS, self.tauS = 1. / numpy.outer(self.exp_lambdaF,self.exp_lambdaG), numpy.ones((self.K,self.L))
         if init == 'random' or init == 'kmeans':
             for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)): 
-                self.muS[k,l] = exponential_draw(self.lambdaS)
+                self.muS[k,l] = exponential_draw(self.exp_lambdaF[k]*self.exp_lambdaG[l])
                 
         self.exp_S, self.var_S = numpy.zeros((self.K,self.L)), numpy.zeros((self.K,self.L))
         for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
@@ -135,7 +134,7 @@ class bnmtf_ard_vb_3(bnmtf_ard_vb_1):
             self.all_exp_tau[it] = self.exp_tau
             
             time_iteration = time.time()
-            self.all_times.append(time_iteration-time_start)            
+            self.all_times.append(time_iteration-time_start)      
             
         
     def elbo(self):
@@ -146,7 +145,8 @@ class bnmtf_ard_vb_3(bnmtf_ard_vb_1):
                      + (self.alphaR - 1.)*self.exp_logtau - self.betaR * self.exp_tau
         self.p_F = self.I * self.exp_loglambdaF.sum() - ( self.exp_lambdaF * self.exp_F ).sum()
         self.p_G = self.J * self.exp_loglambdaG.sum() - ( self.exp_lambdaG * self.exp_G ).sum()
-        self.p_S = self.K*self.L*math.log(self.lambdaS) - ( self.lambdaS * self.exp_S ).sum()
+        self.p_S = self.L * self.exp_loglambdaF.sum() + self.K * self.exp_loglambdaG.sum() \
+                   - ( numpy.outer(self.exp_lambdaF,self.exp_lambdaG) * self.exp_S ).sum()
         self.p_lambdaF = self.K * self.alpha0 * math.log(self.beta0) - self.K * scipy.special.gammaln(self.alpha0) \
                          + (self.alpha0 - 1.)*self.exp_loglambdaF.sum() - self.beta0 * self.exp_lambdaF.sum()
         self.p_lambdaG = self.L * self.alpha0 * math.log(self.beta0) - self.L * scipy.special.gammaln(self.alpha0) \
@@ -172,6 +172,16 @@ class bnmtf_ard_vb_3(bnmtf_ard_vb_1):
                - self.q_tau - self.q_F - self.q_G - self.q_S - self.q_lambdaF - self.q_lambdaG
 
 
+    ''' Update the parameters and expectation for lambdaF. '''
+    def update_lambdaF(self,k):
+        self.alphaF[k] = self.alpha0 + self.I + self.L
+        self.betaF[k] = self.beta0 + self.exp_F[:,k].sum() + (self.exp_S[k,:] * self.exp_lambdaG).sum()
+        
+    ''' Update the parameters and expectation for lambdaG. '''
+    def update_lambdaG(self,l):
+        self.alphaG[l] = self.alpha0 + self.J + self.K
+        self.betaG[l] = self.beta0 + self.exp_G[:,l].sum() + (self.exp_S[:,l] * self.exp_lambdaF).sum()
+        
     ''' Update the parameters and expectation for S. '''
     def update_S(self,k,l):       
         self.tauS[k,l] = self.exp_tau*(self.M*( numpy.outer( self.var_F[:,k]+self.exp_F[:,k]**2 , self.var_G[:,l]+self.exp_G[:,l]**2 ) )).sum()
@@ -180,7 +190,7 @@ class bnmtf_ard_vb_3(bnmtf_ard_vb_1):
         cov_term_G = (self.M * numpy.outer( self.exp_F[:,k] * ( numpy.dot(self.exp_F,self.exp_S[:,l]) - self.exp_F[:,k]*self.exp_S[k,l] ), self.var_G[:,l] )).sum()
         cov_term_F = (self.M * numpy.outer( self.var_F[:,k], self.exp_G[:,l]*(numpy.dot(self.exp_S[k],self.exp_G.T) - self.exp_S[k,l]*self.exp_G[:,l]) )).sum()        
         self.muS[k,l] = 1./self.tauS[k,l] * (
-            - self.lambdaS 
+            - self.exp_lambdaF[k] * self.exp_lambdaG[l] 
             + self.exp_tau * diff_term
             - self.exp_tau * cov_term_G
             - self.exp_tau * cov_term_F

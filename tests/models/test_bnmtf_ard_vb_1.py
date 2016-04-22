@@ -1,5 +1,6 @@
 """
 Tests for the BNMTF+ARD Variational Bayes algorithm.
+Model 1.
 """
 
 import sys

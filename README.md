@@ -28,5 +28,4 @@ The model automatically chooses the correct number of components K (rows) and L 
 - So if lambdaFk is high, mu is very negative, resulting in a posterior that is approximately exponential with parameter mu*sqrt(tau).
 - The mean of that posterior is then 1/(mu*sqrt(tau)) = 0.
 
-Usage:
-TODO
+Usage: see model documentations.
