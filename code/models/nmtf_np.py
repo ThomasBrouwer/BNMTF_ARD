@@ -40,7 +40,7 @@ ALL_METRICS = ['MSE','R^2','Rp']
 OPTIONS_INIT_FG = ['kmeans', 'ones', 'random', 'exponential']
 OPTIONS_INIT_S = ['ones', 'random', 'exponential']
 
-class NMTF:
+class nmtf_np:
     def __init__(self,R,M,K,L):
         ''' Set up the class and do some checks on the values passed. '''
         self.R = numpy.array(R,dtype=float)

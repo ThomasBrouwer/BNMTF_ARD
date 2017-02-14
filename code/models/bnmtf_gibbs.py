@@ -83,18 +83,18 @@ class bnmtf_gibbs:
         self.alphatau, self.betatau = float(hyperparameters['alphatau']), float(hyperparameters['betatau'])
         self.lambdaS = numpy.array(hyperparameters['lambdaS'])
         if self.lambdaS.shape == ():
-            self.lambdaS = self.lambdaV * numpy.ones((self.K,self.L))
+            self.lambdaS = self.lambdaS * numpy.ones((self.K,self.L))
         assert self.lambdaS.shape == (self.K,self.L), "Prior matrix lambdaS has the wrong shape: %s instead of (%s, %s)." % (self.lambdaS.shape,self.K,self.L)
             
         if self.ARD:
             self.alpha0, self.beta0 = float(hyperparameters['alpha0']), float(hyperparameters['beta0'])
         else:
-            self.lambdaF, self.lambdaG = float(hyperparameters['lambdaF']), float(hyperparameters['lambdaG'])
+            self.lambdaF, self.lambdaG = numpy.array(hyperparameters['lambdaF']), numpy.array(hyperparameters['lambdaG'])
             # Make lambdaF/G into a numpy array if they are a float
             if self.lambdaF.shape == ():
                 self.lambdaF = self.lambdaF * numpy.ones((self.I,self.K))
             if self.lambdaG.shape == ():
-                self.lambdaG = self.lambdaV * numpy.ones((self.J,self.L))
+                self.lambdaG = self.lambdaG * numpy.ones((self.J,self.L))
         
             assert self.lambdaF.shape == (self.I,self.K), "Prior matrix lambdaF has the wrong shape: %s instead of (%s, %s)." % (self.lambdaF.shape,self.I,self.K)
             assert self.lambdaG.shape == (self.J,self.L), "Prior matrix lambdaG has the wrong shape: %s instead of (%s, %s)." % (self.lambdaG.shape,self.J,self.L)
@@ -148,20 +148,20 @@ class bnmtf_gibbs:
             kmeans_G = KMeans(self.R.T,self.M.T,self.L)   
             kmeans_G.initialise()
             kmeans_G.cluster()
-            self.mu_G = kmeans_G.clustering_results + 0.2
+            self.G = kmeans_G.clustering_results + 0.2
         else:
             # 'random' or 'exp'
             for i,k in itertools.product(range(self.I),range(self.K)):    
                 hyperparam = self.lambdaFk[k] if self.ARD else self.lambdaF[i,k]
                 self.F[i,k] = exponential_draw(hyperparam) if init_FG == 'random' else 1.0/hyperparam
             for j,l in itertools.product(range(self.J),range(self.L)):
-                hyperparam = self.lambdaGl[l] if self.ARD else self.lambdaF[j,l]
+                hyperparam = self.lambdaGl[l] if self.ARD else self.lambdaG[j,l]
                 self.G[j,l] = exponential_draw(hyperparam) if init_FG == 'random' else 1.0/hyperparam
             
         # Initialise S
         for k,l in itertools.product(range(self.K),range(self.L)):
             hyperparam = self.lambdaS[k,l] 
-            self.S[k,l] = exponential_draw(hyperparam) if init_FG == 'random' else 1.0/hyperparam
+            self.S[k,l] = exponential_draw(hyperparam) if init_S == 'random' else 1.0/hyperparam
         
         # Initialise tau
         self.tau = gamma_draw(self.alpha_s(),self.beta_s())
@@ -243,11 +243,11 @@ class bnmtf_gibbs:
     ''' Compute the parameters for the distributions we sample from. '''
     def alpha_s(self):   
         ''' alpha* for tau. '''
-        return self.alpha + self.size_Omega/2.0
+        return self.alphatau + self.size_Omega/2.0
     
     def beta_s(self):   
         ''' beta* for tau. '''
-        return self.beta + 0.5*(self.M*(self.R-self.triple_dot(self.F,self.S,self.G.T))**2).sum()
+        return self.betatau + 0.5*(self.M*(self.R-self.triple_dot(self.F,self.S,self.G.T))**2).sum()
         
     def alphaFk_s(self,k):   
         ''' alphaFk* for lambdaFk. '''
@@ -293,8 +293,8 @@ class bnmtf_gibbs:
         
 
     def approx_expectation(self,burn_in,thinning):
-        ''' Return our expectation of U, V, tau, lambdak. '''
-        indices = range(burn_in,len(self.all_U),thinning)
+        ''' Return our expectation of F, S, G, tau, lambdaFk, lambdaGl. '''
+        indices = range(burn_in,len(self.all_F),thinning)
         exp_F = numpy.array([self.all_F[i] for i in indices]).sum(axis=0) / float(len(indices))      
         exp_S = numpy.array([self.all_S[i] for i in indices]).sum(axis=0) / float(len(indices))     
         exp_G = numpy.array([self.all_G[i] for i in indices]).sum(axis=0) / float(len(indices))  

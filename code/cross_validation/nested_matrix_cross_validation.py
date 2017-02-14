@@ -13,7 +13,7 @@ We expect the following arguments:
        we with to evaluate the predictions, and returns a dictionary mapping
        performance measure names to their values.
        {'MSE','R2','Rp'} (Mean Square Error, R^2, Pearson correlation coefficient)
-- X, the data matrix.
+- R, the data matrix.
 - M, a mask matrix with 1 values where entries in X are known, and 0 where they are not.
 - K, the number of folds for cross-validation.
 - P, the number of parallel threads
@@ -26,11 +26,11 @@ We expect the following arguments:
 - files_nested_performances, a list of K locations+names of the files in which
     we store the performances of the parameter search cross-validation.
 
-We split the dataset <X> up into <K> folds (considering only 1 entries in <M>),
-thus forming our <K> training and test sets. Then for each we run the regular
+We split the dataset :R up into :K folds (considering only 1 entries in :M),
+thus forming our :K training and test sets. Then for each we run the regular
 cross-validation framework to find the best parameters on the training dataset. 
 Then we train a model using these parameters, and evaluate it on the test set.
-The performances are stored in <file_performance>.
+The performances are stored in :file_performance.
 
 We use the parallel matrix cross-validation module.
 
@@ -51,9 +51,9 @@ import numpy
 attempts_generate_M = 1000
 
 class MatrixNestedCrossValidation:
-    def __init__(self,method,X,M,K,P,parameter_search,train_config,file_performance,files_nested_performances):
+    def __init__(self,method,R,M,K,P,parameter_search,train_config,file_performance,files_nested_performances):
         self.method = method
-        self.X = numpy.array(X,dtype=float)
+        self.R = numpy.array(R,dtype=float)
         self.M = numpy.array(M)
         self.K = K
         self.P = P
@@ -62,8 +62,8 @@ class MatrixNestedCrossValidation:
         self.files_nested_performances = files_nested_performances        
         
         self.fout = open(file_performance,'w')
-        (self.I,self.J) = self.X.shape
-        assert (self.X.shape == self.M.shape), "X and M are of different shapes: %s and %s respectively." % (self.X.shape,self.M.shape)
+        (self.I,self.J) = self.R.shape
+        assert (self.R.shape == self.M.shape), "X and M are of different shapes: %s and %s respectively." % (self.R.shape,self.M.shape)
         
         self.all_performances = {}      # Performances across all folds - dictionary from evaluation criteria to a list of performances
         self.average_performances = {}  # Average performances across folds - dictionary from evaluation criteria to average performance
@@ -81,7 +81,7 @@ class MatrixNestedCrossValidation:
             crossval = ParallelMatrixCrossValidation(
             #crossval = MatrixCrossValidation(
                 method=self.method,
-                X=self.X,
+                R=self.R,
                 M=train,
                 K=self.K,
                 parameter_search=self.parameter_search,
@@ -108,7 +108,7 @@ class MatrixNestedCrossValidation:
             
     # Initialises and runs the model, and returns the performance on the test set
     def run_model(self,train,test,parameters):  
-        model = self.method(self.X,train,**parameters)
+        model = self.method(self.R,train,**parameters)
         model.train(**self.train_config)
         return model.predict(test)
         

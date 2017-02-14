@@ -33,7 +33,7 @@ import numpy, math, itertools, time
 ALL_METRICS = ['MSE','R^2','Rp']
 OPTIONS_INIT_UV = ['ones', 'random', 'exponential']
 
-class NMF:
+class nmf_np:
     def __init__(self,R,M,K):
         ''' Set up the class and do some checks on the values passed. '''
         self.R = numpy.array(R,dtype=float)

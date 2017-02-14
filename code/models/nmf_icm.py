@@ -78,7 +78,7 @@ class nmf_icm:
         if self.ARD:
             self.alpha0, self.beta0 = float(hyperparameters['alpha0']), float(hyperparameters['beta0'])
         else:
-            self.lambdaU, self.lambdaV = float(hyperparameters['lambdaU']), float(hyperparameters['lambdaV'])
+            self.lambdaU, self.lambdaV = numpy.array(hyperparameters['lambdaU']), numpy.array(hyperparameters['lambdaV'])
             # Make lambdaU/V into a numpy array if they are an integer
             if self.lambdaU.shape == ():
                 self.lambdaU = self.lambdaU * numpy.ones((self.I,self.K))
@@ -155,14 +155,14 @@ class nmf_icm:
             for k in range(0,self.K):   
                 tauUk = self.tauU(k)
                 muUk = self.muU(tauUk,k)
-                self.U[:,k] = TN_vector_mode(muUk,tauUk)
+                self.U[:,k] = TN_vector_mode(muUk)
                 #self.U[:,k] = numpy.maximum(self.U[:,k],minimum_TN*numpy.ones(self.I))
                 
             # Update V
             for k in range(0,self.K):
                 tauVk = self.tauV(k)
                 muVk = self.muV(tauVk,k)
-                self.V[:,k] = TN_vector_mode(muVk,tauVk)
+                self.V[:,k] = TN_vector_mode(muVk)
                 #self.V[:,k] = numpy.maximum(self.V[:,k],minimum_TN*numpy.ones(self.J))
                 
             # Update tau

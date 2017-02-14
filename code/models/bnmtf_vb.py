@@ -64,6 +64,7 @@ class bnmtf_vb:
         self.M = numpy.array(M,dtype=float)
         self.K = K
         self.L = L
+        self.ARD = ARD
         
         assert len(self.R.shape) == 2, "Input matrix R is not a two-dimensional array, " \
             "but instead %s-dimensional." % len(self.R.shape)
@@ -77,18 +78,18 @@ class bnmtf_vb:
         self.alphatau, self.betatau = float(hyperparameters['alphatau']), float(hyperparameters['betatau'])
         self.lambdaS = numpy.array(hyperparameters['lambdaS'])
         if self.lambdaS.shape == ():
-            self.lambdaS = self.lambdaV * numpy.ones((self.K,self.L))
+            self.lambdaS = self.lambdaS * numpy.ones((self.K,self.L))
         assert self.lambdaS.shape == (self.K,self.L), "Prior matrix lambdaS has the wrong shape: %s instead of (%s, %s)." % (self.lambdaS.shape,self.K,self.L)
             
         if self.ARD:
             self.alpha0, self.beta0 = float(hyperparameters['alpha0']), float(hyperparameters['beta0'])
         else:
-            self.lambdaF, self.lambdaG = float(hyperparameters['lambdaF']), float(hyperparameters['lambdaG'])
+            self.lambdaF, self.lambdaG = numpy.array(hyperparameters['lambdaF']), numpy.array(hyperparameters['lambdaG'])
             # Make lambdaF/G into a numpy array if they are a float
             if self.lambdaF.shape == ():
                 self.lambdaF = self.lambdaF * numpy.ones((self.I,self.K))
             if self.lambdaG.shape == ():
-                self.lambdaG = self.lambdaV * numpy.ones((self.J,self.L))
+                self.lambdaG = self.lambdaG * numpy.ones((self.J,self.L))
         
             assert self.lambdaF.shape == (self.I,self.K), "Prior matrix lambdaF has the wrong shape: %s instead of (%s, %s)." % (self.lambdaF.shape,self.I,self.K)
             assert self.lambdaG.shape == (self.J,self.L), "Prior matrix lambdaG has the wrong shape: %s instead of (%s, %s)." % (self.lambdaG.shape,self.J,self.L)
@@ -121,6 +122,8 @@ class bnmtf_vb:
         if self.ARD:
             self.alphaFk_s, self.betaFk_s = numpy.zeros(self.K), numpy.zeros(self.K)
             self.alphaGl_s, self.betaGl_s = numpy.zeros(self.L), numpy.zeros(self.L)
+            self.exp_lambdaFk, self.exp_loglambdaFk = numpy.zeros(self.K), numpy.zeros(self.K)
+            self.exp_lambdaGl, self.exp_loglambdaGl = numpy.zeros(self.L), numpy.zeros(self.L)
             for k in range(self.K):
                 self.alphaFk_s[k] = self.alpha0
                 self.betaFk_s[k] = self.beta0
@@ -157,11 +160,11 @@ class bnmtf_vb:
             # 'random' or 'exp'
             for i,k in itertools.product(range(self.I),range(self.K)):  
                 self.tau_F[i,k] = 1.
-                hyperparam = self.lambdaFk[k] if self.ARD else self.lambdaF[i,k]
+                hyperparam = self.exp_lambdaFk[k] if self.ARD else self.lambdaF[i,k]
                 self.mu_F[i,k] = exponential_draw(hyperparam) if init_FG == 'random' else 1.0/hyperparam
             for j,l in itertools.product(range(self.J),range(self.L)):
                 self.tau_G[j,l] = 1.
-                hyperparam = self.lambdaGl[l] if self.ARD else self.lambdaG[j,l]
+                hyperparam = self.exp_lambdaGl[l] if self.ARD else self.lambdaG[j,l]
                 self.mu_G[j,l] = exponential_draw(hyperparam) if init_FG == 'random' else 1.0/hyperparam
             
         # Initialise parameters S
@@ -227,7 +230,7 @@ class bnmtf_vb:
             self.update_exp_tau()
             
             # Store expectations
-            self.all_exp_tau.append(self.exptau)
+            self.all_exp_tau.append(self.exp_tau)
             
             # Store and print performances
             perf, elbo = self.predict(self.M), self.elbo()
@@ -246,15 +249,15 @@ class bnmtf_vb:
         total_elbo = 0.
         
         # Log likelihood               
-        total_elbo += self.size_Omega / 2. * ( self.explogtau - math.log(2*math.pi) ) \
-                      - self.exptau / 2. * self.exp_square_diff()
+        total_elbo += self.size_Omega / 2. * ( self.exp_logtau - math.log(2*math.pi) ) \
+                      - self.exp_tau / 2. * self.exp_square_diff()
                       
         # Prior lambdaFk and lambdaGl, if using ARD, and prior F,G
         if self.ARD:
             total_elbo += self.alpha0 * math.log(self.beta0) - scipy.special.gammaln(self.alpha0) \
-                          + (self.alpha0 - 1.)*self.exp_loglambdaFk.sum() - self.beta0 * self.exp_lambdaFk
+                          + (self.alpha0 - 1.)*self.exp_loglambdaFk.sum() - self.beta0 * self.exp_lambdaFk.sum()
             total_elbo += self.alpha0 * math.log(self.beta0) - scipy.special.gammaln(self.alpha0) \
-                          + (self.alpha0 - 1.)*self.exp_loglambdaGl.sum() - self.beta0 * self.exp_lambdaGl
+                          + (self.alpha0 - 1.)*self.exp_loglambdaGl.sum() - self.beta0 * self.exp_lambdaGl.sum()
             
             total_elbo += self.I * numpy.log(self.exp_lambdaFk).sum() - ( self.exp_lambdaFk * self.exp_F ).sum()
             total_elbo += self.J * numpy.log(self.exp_lambdaGl).sum() - ( self.exp_lambdaGl * self.exp_G ).sum()
@@ -268,23 +271,23 @@ class bnmtf_vb:
         
         # Prior tau
         total_elbo += self.alphatau * math.log(self.betatau) - scipy.special.gammaln(self.alphatau) \
-                      + (self.alphatau - 1.)*self.explogtau - self.betatau * self.exptau
+                      + (self.alphatau - 1.)*self.exp_logtau - self.betatau * self.exp_tau
         
         # q for lambdaFk and lambdaGl, if using ARD
         if self.ARD:
-            total_elbo += - (self.alphaFk_s * math.log(self.betaFk_s)).sum() + scipy.special.gammaln(self.alphaFk_s).sum() \
-                          - ((self.alphaFk_s - 1.)*self.exp_loglambdaFk).sum() + (self.betak_s * self.exp_lambdaFk).sum()
-            total_elbo += - (self.alphaGl_s * math.log(self.betaGl_s)).sum() + scipy.special.gammaln(self.alphaGl_s).sum() \
+            total_elbo += - sum([v1*math.log(v2) for v1,v2 in zip(self.alphaFk_s,self.betaFk_s)]) + sum([scipy.special.gammaln(v) for v in self.alphaFk_s]) \
+                          - ((self.alphaFk_s - 1.)*self.exp_loglambdaFk).sum() + (self.betaFk_s * self.exp_lambdaFk).sum()
+            total_elbo += - sum([v1*math.log(v2) for v1,v2 in zip(self.alphaGl_s,self.betaGl_s)]) + sum([scipy.special.gammaln(v) for v in self.alphaGl_s]) \
                           - ((self.alphaGl_s - 1.)*self.exp_loglambdaGl).sum() + (self.betaGl_s * self.exp_lambdaGl).sum()
             
         # q for F, G, S
         total_elbo += - .5*numpy.log(self.tau_F).sum() + self.I*self.K/2.*math.log(2*math.pi) \
                       + numpy.log(0.5*scipy.special.erfc(-self.mu_F*numpy.sqrt(self.tau_F)/math.sqrt(2))).sum() \
                       + ( self.tau_F / 2. * ( self.var_F + (self.exp_F - self.mu_F)**2 ) ).sum()
-        total_elbo += - .5*numpy.log(self.tauG).sum() + self.J*self.L/2.*math.log(2*math.pi) \
+        total_elbo += - .5*numpy.log(self.tau_G).sum() + self.J*self.L/2.*math.log(2*math.pi) \
                       + numpy.log(0.5*scipy.special.erfc(-self.mu_G*numpy.sqrt(self.tau_G)/math.sqrt(2))).sum() \
                       + ( self.tau_G / 2. * ( self.var_G + (self.exp_G - self.mu_G)**2 ) ).sum()
-        total_elbo += - .5*numpy.log(self.tauS).sum() + self.K*self.L/2.*math.log(2*math.pi) \
+        total_elbo += - .5*numpy.log(self.tau_S).sum() + self.K*self.L/2.*math.log(2*math.pi) \
                       + numpy.log(0.5*scipy.special.erfc(-self.mu_S*numpy.sqrt(self.tau_S)/math.sqrt(2))).sum() \
                       + ( self.tau_S / 2. * ( self.var_S + (self.exp_S - self.mu_S)**2 ) ).sum()
         
@@ -309,8 +312,8 @@ class bnmtf_vb:
     ''' Update the parameters for the distributions. '''
     def update_tau(self):   
         ''' Parameter updates tau. '''
-        self.alpha_s = self.alpha + self.size_Omega/2.0
-        self.beta_s = self.beta + 0.5*self.exp_square_diff()
+        self.alpha_s = self.alphatau + self.size_Omega/2.0
+        self.beta_s = self.betatau + 0.5*self.exp_square_diff()
         
     def exp_square_diff(self): 
         ''' Compute: sum_Omega E_q(F,S,G) [ ( Rij - Fi S Gj )^2 ]. '''
@@ -321,13 +324,13 @@ class bnmtf_vb:
     
     def update_lambdaFk(self,k):   
         ''' Parameter updates lambdaFk. '''
-        self.alphaFk_s = self.alpha0 + self.I
-        self.betaFk_s = self.beta0 + self.exp_F[:,k].sum()
+        self.alphaFk_s[k] = self.alpha0 + self.I
+        self.betaFk_s[k] = self.beta0 + self.exp_F[:,k].sum()
         
     def update_lambdaGl(self,l):   
         ''' Parameter updates lambdaFk. '''
-        self.alphaGl_s = self.alpha0 + self.J
-        self.betaGl_s = self.beta0 + self.exp_G[:,l].sum()
+        self.alphaGl_s[l] = self.alpha0 + self.J
+        self.betaGl_s[l] = self.beta0 + self.exp_G[:,l].sum()
         
     def update_F(self,k):  
         ''' Parameter updates F. ''' 
@@ -339,8 +342,8 @@ class bnmtf_vb:
         cov_term = ( self.M * ( ( numpy.dot(self.exp_S[k]*numpy.dot(self.exp_F,self.exp_S), self.var_G.T) - numpy.outer(self.exp_F[:,k], numpy.dot( self.exp_S[k]**2, self.var_G.T )) ) ) ).sum(axis=1)
         self.mu_F[:,k] = 1./self.tau_F[:,k] * (
             - lamb
-            + self.exptau * diff_term
-            - self.exptau * cov_term
+            + self.exp_tau * diff_term
+            - self.exp_tau * cov_term
         ) 
         
     def update_S(self,k,l):   
@@ -352,9 +355,9 @@ class bnmtf_vb:
         cov_term_F = (self.M * numpy.outer( self.var_F[:,k], self.exp_G[:,l]*(numpy.dot(self.exp_S[k],self.exp_G.T) - self.exp_S[k,l]*self.exp_G[:,l]) )).sum()        
         self.mu_S[k,l] = 1./self.tau_S[k,l] * (
             - self.lambdaS[k,l] 
-            + self.exptau * diff_term
-            - self.exptau * cov_term_G
-            - self.exptau * cov_term_F
+            + self.exp_tau * diff_term
+            - self.exp_tau * cov_term_G
+            - self.exp_tau * cov_term_F
         ) 
         
     def update_G(self,l):  
@@ -364,10 +367,10 @@ class bnmtf_vb:
         lamb = self.exp_lambdaGl[l] if self.ARD else self.lambdaG[:,l]
         diff_term = (self.M * ( (self.R-self.triple_dot(self.exp_F,self.exp_S,self.exp_G.T)+numpy.outer(numpy.dot(self.exp_F,self.exp_S[:,l]), self.exp_G[:,l]) ).T * numpy.dot(self.exp_F,self.exp_S[:,l]) ).T ).sum(axis=0)
         cov_term = (self.M * ( numpy.dot(self.var_F, (self.exp_S[:,l]*numpy.dot(self.exp_S,self.exp_G.T).T).T) - numpy.outer(numpy.dot(self.var_F,self.exp_S[:,l]**2), self.exp_G[:,l]) )).sum(axis=0)
-        self.muG[:,l] = 1./self.tauG[:,l] * (
+        self.mu_G[:,l] = 1./self.tau_G[:,l] * (
             - lamb
-            + self.exptau * diff_term
-            - self.exptau * cov_term
+            + self.exp_tau * diff_term
+            - self.exp_tau * cov_term
         )
 
 

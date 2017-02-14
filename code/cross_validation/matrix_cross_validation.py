@@ -14,7 +14,7 @@ We expect the following arguments:
        we with to evaluate the predictions, and returns a dictionary mapping
        performance measure names to their values.
        {'MSE','R2','Rp'} (Mean Square Error, R^2, Pearson correlation coefficient)
-- X, the data matrix.
+- R, the data matrix.
 - M, a mask matrix with 1 values where entries in X are known, and 0 where they are not.
 - K, the number of folds for cross-validation.
 - parameter_search, a list of dictionaries from parameter names to values, 
@@ -24,10 +24,10 @@ We expect the following arguments:
 - file_performance, the location and name of the file in which we store the performances.
 
 For each of the parameter configurations in <parameter_search>, we split the
-dataset <X> into <K> folds (considering only 1 entries in <M>), and thus form
-our <K> training and test sets. Then for each we train the model using the 
-parameters and training configuration <train_config>. The performances are 
-stored in <file_performance>
+dataset :R into :K folds (considering only 1 entries in <M>), and thus form
+our :K training and test sets. Then for each we train the model using the 
+parameters and training configuration :train_config. The performances are 
+stored in :file_performance.
 
 Methods:
 - Constructor - simply takes in the arguments requires
@@ -46,17 +46,17 @@ import json
 attempts_generate_M = 1000
 
 class MatrixCrossValidation:
-    def __init__(self,method,X,M,K,parameter_search,train_config,file_performance):
+    def __init__(self,method,R,M,K,parameter_search,train_config,file_performance):
         self.method = method
-        self.X = numpy.array(X,dtype=float)
+        self.R = numpy.array(R,dtype=float)
         self.M = numpy.array(M)
         self.K = K
         self.train_config = train_config
         self.parameter_search = parameter_search
         
         self.fout = open(file_performance,'w')
-        (self.I,self.J) = self.X.shape
-        assert (self.X.shape == self.M.shape), "X and M are of different shapes: %s and %s respectively." % (self.X.shape,self.M.shape)
+        (self.I,self.J) = self.R.shape
+        assert (self.R.shape == self.M.shape), "X and M are of different shapes: %s and %s respectively." % (self.R.shape,self.M.shape)
         
         self.all_performances = {}      # Performances across all folds - mapping JSON of parameters to a dictionary from evaluation criteria to a list of performances
         self.average_performances = {}  # Average performances across folds - mapping JSON of parameters to a dictionary from evaluation criteria to average performance
@@ -88,7 +88,7 @@ class MatrixCrossValidation:
             
     # Initialises and runs the model, and returns the performance on the test set
     def run_model(self,train,test,parameters):
-        model = self.method(self.X,train,**parameters)
+        model = self.method(self.R,train,**parameters)
         model.train(**self.train_config)
         return model.predict(test)
         

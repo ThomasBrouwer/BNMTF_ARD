@@ -78,7 +78,7 @@ class bnmf_gibbs:
         if self.ARD:
             self.alpha0, self.beta0 = float(hyperparameters['alpha0']), float(hyperparameters['beta0'])
         else:
-            self.lambdaU, self.lambdaV = float(hyperparameters['lambdaU']), float(hyperparameters['lambdaV'])
+            self.lambdaU, self.lambdaV = numpy.array(hyperparameters['lambdaU']), numpy.array(hyperparameters['lambdaV'])
             # Make lambdaU/V into a numpy array if they are a float
             if self.lambdaU.shape == ():
                 self.lambdaU = self.lambdaU * numpy.ones((self.I,self.K))

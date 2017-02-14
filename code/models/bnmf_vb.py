@@ -73,7 +73,7 @@ class bnmf_vb:
         if self.ARD:
             self.alpha0, self.beta0 = float(priors['alpha0']), float(priors['beta0'])
         else:
-            self.lambdaU, self.lambdaV = float(priors['lambdaU']), float(priors['lambdaV'])
+            self.lambdaU, self.lambdaV = numpy.array(priors['lambdaU']), numpy.array(priors['lambdaV'])
             # Make lambdaU/V into a numpy array if they are an integer
             if self.lambdaU.shape == ():
                 self.lambdaU = self.lambdaU * numpy.ones((self.I,self.K))
@@ -109,6 +109,7 @@ class bnmf_vb:
         # Initialise lambdak, and compute expectation
         if self.ARD:
             self.alphak_s, self.betak_s = numpy.zeros(self.K), numpy.zeros(self.K)
+            self.exp_lambdak, self.exp_loglambdak = numpy.zeros(self.K), numpy.zeros(self.K)
             for k in range(self.K):
                 self.alphak_s[k] = self.alpha0
                 self.betak_s[k] = self.beta0
@@ -120,11 +121,11 @@ class bnmf_vb:
         
         for i,k in itertools.product(range(self.I),range(self.K)):  
             self.tau_U[i,k] = 1.
-            hyperparam = self.lambdak[k] if self.ARD else self.lambdaU[i,k]
+            hyperparam = self.exp_lambdak[k] if self.ARD else self.lambdaU[i,k]
             self.mu_U[i,k] = exponential_draw(hyperparam) if init_UV == 'random' else 1.0/hyperparam
         for j,k in itertools.product(range(self.J),range(self.K)):
             self.tau_V[j,k] = 1.
-            hyperparam = self.lambdak[k] if self.ARD else self.lambdaV[j,k]
+            hyperparam = self.exp_lambdak[k] if self.ARD else self.lambdaV[j,k]
             self.mu_V[j,k] = exponential_draw(hyperparam) if init_UV == 'random' else 1.0/hyperparam
         
         # Compute expectations and variances U, V
@@ -173,7 +174,7 @@ class bnmf_vb:
             self.update_exp_tau()
             
             # Store expectations
-            self.all_exp_tau.append(self.exptau)
+            self.all_exp_tau.append(self.exp_tau)
             
             # Store and print performances
             perf, elbo = self.predict(self.M), self.elbo()
@@ -192,13 +193,13 @@ class bnmf_vb:
         total_elbo = 0.
         
         # Log likelihood               
-        total_elbo += self.size_Omega / 2. * ( self.explogtau - math.log(2*math.pi) ) \
-                      - self.exptau / 2. * self.exp_square_diff()
+        total_elbo += self.size_Omega / 2. * ( self.exp_logtau - math.log(2*math.pi) ) \
+                      - self.exp_tau / 2. * self.exp_square_diff()
                       
         # Prior lambdak, if using ARD, and prior U, V
         if self.ARD:
             total_elbo += self.alpha0 * math.log(self.beta0) - scipy.special.gammaln(self.alpha0) \
-                          + (self.alpha0 - 1.)*self.exp_loglambdak.sum() - self.beta0 * self.exp_lambdak
+                          + (self.alpha0 - 1.)*self.exp_loglambdak.sum() - self.beta0 * self.exp_lambdak.sum()
             
             total_elbo += self.I * numpy.log(self.exp_lambdak).sum() - ( self.exp_lambdak * self.exp_U ).sum()
             total_elbo += self.J * numpy.log(self.exp_lambdak).sum() - ( self.exp_lambdak * self.exp_V ).sum()
@@ -209,18 +210,18 @@ class bnmf_vb:
         
         # Prior tau
         total_elbo += self.alphatau * math.log(self.betatau) - scipy.special.gammaln(self.alphatau) \
-                      + (self.alphatau - 1.)*self.explogtau - self.betatau * self.exptau
+                      + (self.alphatau - 1.)*self.exp_logtau - self.betatau * self.exp_tau
         
         # q for lambdak, if using ARD
         if self.ARD:
-            total_elbo += - (self.alphak_s * math.log(self.betak_s)).sum() + scipy.special.gammaln(self.alphak_s).sum() \
+            total_elbo += - sum([v1*math.log(v2) for v1,v2 in zip(self.alphak_s,self.betak_s)]) + sum([scipy.special.gammaln(v) for v in self.alphak_s]) \
                           - ((self.alphak_s - 1.)*self.exp_loglambdak).sum() + (self.betak_s * self.exp_lambdak).sum()
             
         # q for U, V
         total_elbo += - .5*numpy.log(self.tau_U).sum() + self.I*self.K/2.*math.log(2*math.pi) \
                       + numpy.log(0.5*scipy.special.erfc(-self.mu_U*numpy.sqrt(self.tau_U)/math.sqrt(2))).sum() \
                       + ( self.tau_U / 2. * ( self.var_U + (self.exp_U - self.mu_U)**2 ) ).sum()
-        total_elbo += - .5*numpy.log(self.tauV).sum() + self.J*self.K/2.*math.log(2*math.pi) \
+        total_elbo += - .5*numpy.log(self.tau_V).sum() + self.J*self.K/2.*math.log(2*math.pi) \
                       + numpy.log(0.5*scipy.special.erfc(-self.mu_V*numpy.sqrt(self.tau_V)/math.sqrt(2))).sum() \
                       + ( self.tau_V / 2. * ( self.var_V + (self.exp_V - self.mu_V)**2 ) ).sum()
         
@@ -244,8 +245,8 @@ class bnmf_vb:
         
     def update_lambdak(self,k):   
         ''' Parameter updates lambdak. '''
-        self.alphak_s = self.alpha0 + self.I + self.J
-        self.betak_s = self.beta0 + self.exp_U[:,k].sum() + self.exp_V[:,k].sum()
+        self.alphak_s[k] = self.alpha0 + self.I + self.J
+        self.betak_s[k] = self.beta0 + self.exp_U[:,k].sum() + self.exp_V[:,k].sum()
         
     def update_U(self,k):   
         ''' Parameter updates U. '''   
@@ -273,18 +274,18 @@ class bnmf_vb:
     
     def update_exp_U(self,k):
         ''' Update expectation U. '''
-        self.exp_U[:,k] = TN_vector_expectation(self.muU[:,k],self.tauU[:,k])
-        self.var_U[:,k] = TN_vector_variance(self.muU[:,k],self.tauU[:,k])
+        self.exp_U[:,k] = TN_vector_expectation(self.mu_U[:,k],self.tau_U[:,k])
+        self.var_U[:,k] = TN_vector_variance(self.mu_U[:,k],self.tau_U[:,k])
         
     def update_exp_V(self,k):
         ''' Update expectation V. '''
-        self.exp_V[:,k] = TN_vector_expectation(self.muV[:,k],self.tauV[:,k])
-        self.var_V[:,k] = TN_vector_variance(self.muV[:,k],self.tauV[:,k])
+        self.exp_V[:,k] = TN_vector_expectation(self.mu_V[:,k],self.tau_V[:,k])
+        self.var_V[:,k] = TN_vector_variance(self.mu_V[:,k],self.tau_V[:,k])
 
 
     def predict(self, M_pred):
         ''' Predict missing values in R. '''
-        R_pred = numpy.dot(self.expU, self.expV.T)
+        R_pred = numpy.dot(self.exp_U, self.exp_V.T)
         MSE = self.compute_MSE(M_pred, self.R, R_pred)
         R2 = self.compute_R2(M_pred, self.R, R_pred)    
         Rp = self.compute_Rp(M_pred, self.R, R_pred)        
@@ -327,7 +328,7 @@ class bnmf_vb:
             # -2*loglikelihood + 2*no. free parameters
             return - 2 * log_likelihood + 2 * self.number_parameters()
         elif metric == 'MSE':
-            R_pred = numpy.dot(self.expU,self.expV.T)
+            R_pred = numpy.dot(self.exp_U,self.exp_V.T)
             return self.compute_MSE(self.M,self.R,R_pred)
         elif metric == 'ELBO':
             return self.elbo()
