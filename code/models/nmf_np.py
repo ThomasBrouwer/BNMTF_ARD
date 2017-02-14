@@ -77,7 +77,8 @@ class NMF:
 
     def initialise(self,init_UV='random',expo_prior=1.):
         ''' Initialise U and V. '''
-        assert init_UV in OPTIONS_INIT_UV, "Unrecognised init option for U,V: %s." % init_UV
+        assert init_UV in OPTIONS_INIT_UV, "Unrecognised init option for U,V: %s. Should be one in %s." % (init_UV, OPTIONS_INIT_UV)
+        
         if init_UV == 'ones':
             self.U = numpy.ones((self.I,self.K))
             self.V = numpy.ones((self.J,self.K))
@@ -104,9 +105,9 @@ class NMF:
             
         time_start = time.time()
         for it in range(1,iterations+1):
-            for k in range(0,self.K):
+            for k in range(self.K):
                 self.update_U(k)
-            for k in range(0,self.K):
+            for k in range(self.K):
                 self.update_V(k)
             
             self.give_update(it)

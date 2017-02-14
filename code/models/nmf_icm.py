@@ -18,11 +18,11 @@ The random variables are initialised as follows:
 We initialise the values of U and V according to the given argument 'init_UV'. 
 
 Usage of class:
-    BNMF = bnmf_gibbs(R,M,K,ARD,priors)
+    BNMF = bnmf_gibbs(R,M,K,ARD,hyperparameters)
     BNMF.initisalise(init_UV)
     BNMF.run(iterations)
 Or:
-    BNMF = bnmf_gibbs(R,M,K,ARD,priors)
+    BNMF = bnmf_gibbs(R,M,K,ARD,hyperparameters)
     BNMF.train(init_UV,iterations)
     
 The draws for all iterations are stored in: all_U, all_V, all_lambdak, all_tau.
@@ -58,7 +58,7 @@ ALL_QUALITY = ['loglikelihood','BIC','AIC','MSE','ELBO']
 OPTIONS_INIT_UV = ['random', 'exp']
 
 class nmf_icm:
-    def __init__(self,R,M,K,ARD,priors):
+    def __init__(self,R,M,K,ARD,hyperparameters):
         ''' Set up the class and do some checks on the values passed. '''
         self.R = numpy.array(R,dtype=float)
         self.M = numpy.array(M,dtype=float)
@@ -74,11 +74,11 @@ class nmf_icm:
         self.size_Omega = self.M.sum()
         self.check_empty_rows_columns()      
         
-        self.alphatau, self.betatau = float(priors['alphatau']), float(priors['betatau'])
+        self.alphatau, self.betatau = float(hyperparameters['alphatau']), float(hyperparameters['betatau'])
         if self.ARD:
-            self.alpha0, self.beta0 = float(priors['alpha0']), float(priors['beta0'])
+            self.alpha0, self.beta0 = float(hyperparameters['alpha0']), float(hyperparameters['beta0'])
         else:
-            self.lambdaU, self.lambdaV = float(priors['lambdaU']), float(priors['lambdaV'])
+            self.lambdaU, self.lambdaV = float(hyperparameters['lambdaU']), float(hyperparameters['lambdaV'])
             # Make lambdaU/V into a numpy array if they are an integer
             if self.lambdaU.shape == ():
                 self.lambdaU = self.lambdaU * numpy.ones((self.I,self.K))

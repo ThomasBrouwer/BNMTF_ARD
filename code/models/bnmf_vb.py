@@ -12,18 +12,18 @@ We expect the following arguments:
     lambdaU, lambdaV  - if not using the ARD, nonnegative reals defining prior over U and V
     
 The random variables are initialised as follows:
+    (lambdak) alphak_s, betak_s - set to alpha0, beta0
     (U,V) muU, muV - expectation ('exp') or random ('random')
     (U,V) tauU, tauV - set to 1
-    (tau) alpha_s, beta_s: using updates, and then random draw
-    (lambdak) alphak_s, betak_s: set to alpha0, beta0
+    (tau) alpha_s, beta_s - using updates
 We initialise the values of U and V according to the given argument 'init_UV'. 
 
 Usage of class:
-    BNMF = bnmf_vb(R,M,K,ARD,priors)
+    BNMF = bnmf_vb(R,M,K,ARD,hyperparameters)
     BNMF.initisalise(init_UV)      
     BNMF.run(iterations)
 Or:
-    BNMF = bnmf_vb(R,M,K,ARD,priors)
+    BNMF = bnmf_vb(R,M,K,ARD,hyperparameters)
     BNMF.train(init_UV,iterations)
 
 We can test the performance of our model on a test dataset, specifying our test set with a mask M. 
@@ -52,7 +52,7 @@ ALL_METRICS = ['MSE','R^2','Rp']
 ALL_QUALITY = ['loglikelihood','BIC','AIC','MSE','ELBO']
 OPTIONS_INIT_UV = ['random', 'exp']
 
-class bnmf_vb_optimised:
+class bnmf_vb:
     def __init__(self,R,M,K,ARD,priors):
         ''' Set up the class and do some checks on the values passed. '''
         self.R = numpy.array(R,dtype=float)
@@ -151,7 +151,7 @@ class bnmf_vb_optimised:
             self.all_performances[metric] = []
         
         time_start = time.time()
-        for it in range(0,iterations):
+        for it in range(iterations):
             # Update lambdak
             if self.ARD:
                 for k in range(self.K):
@@ -334,8 +334,8 @@ class bnmf_vb_optimised:
         
     def log_likelihood(self):
         ''' Return the likelihood of the data given the trained model's parameters. '''
-        return self.size_Omega / 2. * ( self.explogtau - math.log(2*math.pi) ) \
-             - self.exptau / 2. * (self.M*( self.R - numpy.dot(self.expU,self.expV.T))**2).sum()
+        return self.size_Omega / 2. * ( self.exp_logtau - math.log(2*math.pi) ) \
+             - self.exp_tau / 2. * (self.M*( self.R - numpy.dot(self.exp_U,self.exp_V.T))**2).sum()
              
     def number_parameters(self):
         ''' Return the number of free variables in the model. '''
