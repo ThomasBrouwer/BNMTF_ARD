@@ -1,7 +1,7 @@
 TODO: update.
 
-# Fast Bayesian nonnegative matrix factorisation and tri-factorisation
-Accepted for NIPS 2016 Workshop on Advances in Approximate Bayesian Inference. [arXiv](https://arxiv.org/abs/1610.08127).
+# Bayesian nonnegative matrix tri-factorisation: inference trade-offs
+Submitted to ECML 2017.
 
 Authors: **Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**.
 
