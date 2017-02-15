@@ -12,6 +12,9 @@ The matrix is tab-delimited, with NaN for missing entries.
 
 These values are already in the range [0,8] for IC50, [0,10] for EC50, so do 
 not need capping.
+
+OUTPUT:
+Number drugs: 24. Number cell lines: 504. Number of observed entries IC50 / EC50: 11670 / 7626. Fraction observed IC50 / EC50: 0.964781746032 / 0.630456349206.
 """
 
 import numpy

@@ -9,10 +9,14 @@ The matrix is tab-delimited, with NaN for missing entries.
 Also do some preprocessing;
 - Undo the log_10 transform by taking 10^value.
 - Cap high values.
+
+OUTPUT:
+Number drugs: 139. Number cell lines: 707. Number of observed entries: 79262. Fraction observed: 0.806549103009.
 """
 
 import pandas
 import numpy
+import math
 import matplotlib.pyplot as plt
 
 ''' Make names lowercase, remove dashes and spaces and dots. '''
@@ -63,7 +67,7 @@ def reorder_alphabetically(matrix,row_names,column_names):
             
 def undo_log10_transform(matrix):
     ''' Take 10^value for each entry in the matrix. '''
-    return 10**matrix
+    return math.e**matrix
         
 def cap_high_values(matrix, cap):
     ''' Set any values higher than :cap to :cap. '''
@@ -75,7 +79,7 @@ file_gdsc = "./raw/gdsc_manova_input_w5.csv"
 sensitivities, cell_lines, drugs = load_gdsc(file_gdsc)
 sensitivities_sorted, cell_lines_sorted, drugs_sorted = reorder_alphabetically(sensitivities,cell_lines,drugs)
 
-cap = 1000
+cap = 100
 sensitivities_sorted = undo_log10_transform(sensitivities_sorted)
 sensitivities_sorted = cap_high_values(sensitivities_sorted, cap)
 
@@ -94,6 +98,6 @@ print "Number drugs: %s. Number cell lines: %s. Number of observed entries: %s. 
     
 ''' Make a plot of the data distribution. '''
 plt.figure()
-plt.hist([v for v in sensitivities_sorted.flatten() if not numpy.isnan(v)], bins=range(0,cap+10,10))
+plt.hist([v for v in sensitivities_sorted.flatten() if not numpy.isnan(v)], bins=range(0,cap+1,1))
 plt.title("Distribution of GDSC IC50 values")
 plt.savefig('./../plots/distribution_gdsc_ic50.pdf')

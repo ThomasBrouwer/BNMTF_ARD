@@ -11,6 +11,9 @@ Return:
 - Cell lines (alphabetically, tab delimited; normalised name, name, id, cancer type, tissue type)
 - Drug names (alphabetically, tab delimited; normalised name, name, id, SMILES)
 The matrix is tab-delimited, with NaN for missing entries. 
+
+OUTPUT:
+Number drugs: 545. Number cell lines: 887. Number of observed entries: 387130. Fraction observed: 0.800823309165.
 """
 
 import numpy
