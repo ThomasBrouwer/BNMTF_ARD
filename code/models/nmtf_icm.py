@@ -62,6 +62,7 @@ ALL_METRICS = ['MSE','R^2','Rp']
 ALL_QUALITY = ['loglikelihood','BIC','AIC','MSE','ELBO']
 OPTIONS_INIT_FG = ['kmeans', 'random', 'exp']
 OPTIONS_INIT_S = ['random', 'exp']
+MINIMUM_TN = 0.1 # ICM has the tendency to set most columns to 0's; we reset them to this value.
 
 class nmtf_icm:
     def __init__(self,R,M,K,L,ARD,hyperparameters):
@@ -195,21 +196,21 @@ class nmtf_icm:
                 tauFk = self.tauF(k)
                 muFk = self.muF(tauFk,k)
                 self.F[:,k] = TN_vector_mode(muFk)
-                #self.F[:,k] = numpy.maximum(self.F[:,k],minimum_TN*numpy.ones(self.I))
+                self.F[:,k] = numpy.maximum(self.F[:,k],MINIMUM_TN*numpy.ones(self.I))
                 
             # Update S
             for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
                 tauSkl = self.tauS(k,l)
                 muSkl = self.muS(tauSkl,k,l)
                 self.S[k,l] = TN_mode(muSkl)
-                #self.S[k,l] = max(self.S[k,l],minimum_TN)
+                self.S[k,l] = max(self.S[k,l],MINIMUM_TN)
                 
             # Update G
             for l in range(0,self.L):
                 tauGl = self.tauG(l)
                 muGl = self.muG(tauGl,l)
                 self.G[:,l] = TN_vector_mode(muGl)
-                #self.G[:,l] = numpy.maximum(self.G[:,l],minimum_TN*numpy.ones(self.J))
+                self.G[:,l] = numpy.maximum(self.G[:,l],MINIMUM_TN*numpy.ones(self.J))
                 
             # Update tau
             self.tau = gamma_mode(self.alpha_s(),self.beta_s())

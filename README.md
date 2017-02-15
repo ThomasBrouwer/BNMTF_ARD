@@ -1,5 +1,3 @@
-TODO: update.
-
 # Bayesian nonnegative matrix tri-factorisation: inference trade-offs
 Submitted to ECML 2017.
 
@@ -26,12 +24,7 @@ Python classes for the BNMF and BNMTF models: Gibbs sampling, Variational Bayes,
 - **nmtf_np.py** - Implementation of non-probabilistic NMTF, introduced by Yoo and Choi 2009.
 
 #### /grid_search/
-Classes for doing model selection on the Bayesian NMF and NMTF models, and for doing cross-validation with model selection. We can minimise or maximise the MSE, ELBO, AIC, BIC, log likelihood.
-- **line_search_bnmf.py** - Line search for the BNMF models, trying out different values for K.
-- **line_search_cross_validation** - Class for measuring cross-validation performance, with line search to choose K, for the BNMF models.
-- **grid_search_bnmtf.py** - Full grid search for the BNMTF models, trying all combinations of values for K and L in a given range.
-- **greedy_search_bnmtf.py** - Greedy grid search for the BNMTF models, as described in NIPS workshop paper.
-- **greedy_search_cross_validation.py** - Class for measuring cross-validation performance, with greedy search, for the BNMTF models.
+Classes for doing cross-validation, and nested cross-validation, on the Bayesian NMF and NMTF models
 - **matrix_cross_validation.py** - Class for finding the best value of K for any of the models (Gibbs, VB, ICM, NP), using cross-validation.
 - **parallel_matrix_cross_validation.py** - Same as matrix_cross_validation.py but P folds are ran in parallel.
 - **nested_matrix_cross_validation.py** - Class for measuring cross-validation performance, with nested cross-validation to choose K, used for non-probabilistic NMF and NMTF.
@@ -44,25 +37,19 @@ Contains the toy data, and methods for generating toy data.
 
 #### /data_drug_sensitivity/
 Contains the drug sensitivity datasets (GDSC IC50, CCLE IC50, CCLE EC50, CTRP EC50).
-- **/gdsc/**, **/ctrp/**, **/ccle/** - The datasets. We obtained these from the "Bayesian Hybrid Matrix Factorisation for Data Integration" paper (Thomas Brouwer and Pietro Lio', 2017), using the complete datasets of each (before finding the overlap). For the GDSC IC50 dataset, some more details can be found in **/gdsc/notes**. We did not use the CTRP EC50 dataset for the cross-validation experiments.
+- **/gdsc/**, **/ctrp/**, **/ccle/** - The datasets. We obtained these from the "Bayesian Hybrid Matrix Factorisation for Data Integration" paper (Thomas Brouwer and Pietro Lio', 2017), using the complete datasets of each (before finding the overlap). More details in description.md.
+- **/plots/** - Plots of the distribution of values in the four datasets.
 
 #### /experiments/
 - **/experiments_toy/** - Experiments on the toy data.
-  - **/convergence/** - Measure convergence rate of the methods (against iterations) on the toy data.
-  - **/time/** - Measure convergence rate of the methods (against time) on the toy data.
+  - **/convergence/** - Measure convergence rate of the methods (against iterations and time) on the toy data.
   - **/grid_search/** - Measure the effectiveness of the line, grid, and greedy search model selection methods on the toy data.
   - **/test_varying_missing/** - Measure the predictive performance on missing values for varying sparsity levels.
   - **/test_varying_noise/** - Measure the predictive performance on missing values for varying noise levels.
 - **/experiments_gdsc/** - Experiments on the Sanger GDSC IC50 dataset, as well as helper methods for loading in the data.
-  - **load_data.py** - Helper methods for loading in the Sanger data.
-  - **/convergence/** - Measure convergence rate of the methods (against iterations) on the Sanger data.
-  - **/time/** - Measure convergence rate of the methods (against time) on the Sanger data.
+  - **/convergence/** - Measure convergence rate of the methods (against iterations and time) on the GDSC data.
   - **/grid_search/** - Measure the effectiveness of the line, grid, and greedy search model selection methods on the Sanger data.
   - **/cross_validation/** - 10-fold cross-validation experiments on the Sanger data.
-- **/experiments_ccle/** - Cross-validation experiments on the CCLE IC50 and EC50 datasets, as well as helper methods for loading in the data.
-  - **load_data.py** - Helper methods for loading in the CCLE IC50 and EC50 data.
-  - **/cross_validation/** - 10-fold cross-validation experiments on the CCLE IC50 and EC50 data.
-- **/experiments_ctrp/load_data.py** - Helper methods for loading in the CTRP data.
 
 #### /plots/
 The results and plots for the experiments are stored in this folder, along with scripts for making the plots.

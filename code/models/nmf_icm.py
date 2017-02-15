@@ -56,6 +56,7 @@ import numpy, itertools, math, time
 ALL_METRICS = ['MSE','R^2','Rp']
 ALL_QUALITY = ['loglikelihood','BIC','AIC','MSE','ELBO']
 OPTIONS_INIT_UV = ['random', 'exp']
+MINIMUM_TN = 0.1 # ICM has the tendency to set most columns to 0's; we reset them to this value.
 
 class nmf_icm:
     def __init__(self,R,M,K,ARD,hyperparameters):
@@ -156,14 +157,14 @@ class nmf_icm:
                 tauUk = self.tauU(k)
                 muUk = self.muU(tauUk,k)
                 self.U[:,k] = TN_vector_mode(muUk)
-                #self.U[:,k] = numpy.maximum(self.U[:,k],minimum_TN*numpy.ones(self.I))
+                self.U[:,k] = numpy.maximum(self.U[:,k],MINIMUM_TN*numpy.ones(self.I))
                 
             # Update V
             for k in range(0,self.K):
                 tauVk = self.tauV(k)
                 muVk = self.muV(tauVk,k)
                 self.V[:,k] = TN_vector_mode(muVk)
-                #self.V[:,k] = numpy.maximum(self.V[:,k],minimum_TN*numpy.ones(self.J))
+                self.V[:,k] = numpy.maximum(self.V[:,k],MINIMUM_TN*numpy.ones(self.J))
                 
             # Update tau
             self.tau = gamma_mode(self.alpha_s(),self.beta_s())
