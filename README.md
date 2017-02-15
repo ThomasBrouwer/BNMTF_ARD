@@ -43,13 +43,13 @@ Contains the drug sensitivity datasets (GDSC IC50, CCLE IC50, CCLE EC50, CTRP EC
 #### /experiments/
 - **/experiments_toy/** - Experiments on the toy data.
   - **/convergence/** - Measure convergence rate of the methods (against iterations and time) on the toy data.
-  - **/grid_search/** - Measure the effectiveness of the line, grid, and greedy search model selection methods on the toy data.
-  - **/test_varying_missing/** - Measure the predictive performance on missing values for varying sparsity levels.
-  - **/test_varying_noise/** - Measure the predictive performance on missing values for varying noise levels.
+  - **/sparsity/** - Measure the predictive performance on missing values for varying sparsity levels.
+  - **/noise/** - Measure the predictive performance on missing values for varying noise levels.
 - **/experiments_gdsc/** - Experiments on the Sanger GDSC IC50 dataset, as well as helper methods for loading in the data.
   - **/convergence/** - Measure convergence rate of the methods (against iterations and time) on the GDSC data.
   - **/grid_search/** - Measure the effectiveness of the line, grid, and greedy search model selection methods on the Sanger data.
   - **/cross_validation/** - 10-fold cross-validation experiments on the Sanger data.
+  - **/sparsity/** - Measure the predictive performance on missing values for varying sparsity levels.
 
 #### /plots/
 The results and plots for the experiments are stored in this folder, along with scripts for making the plots.
