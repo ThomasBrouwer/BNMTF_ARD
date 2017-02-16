@@ -13,7 +13,7 @@ from BNMTF_ARD.data.drug_sensitivity.load_data import load_gdsc_ic50
 from BNMTF_ARD.code.cross_validation.mask import try_generate_M_from_M
 from BNMTF_ARD.code.cross_validation.mask import calc_inverse_M
 
-import numpy, matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 ''' Experiment settings. '''
