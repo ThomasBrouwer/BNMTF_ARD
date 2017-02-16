@@ -11,7 +11,7 @@ This project is structured as follows:
 Python code, for the models, cross-validation methods, and model selection.
 
 #### /models/
-Python classes for the BNMF and BNMTF models: Gibbs sampling, Variational Bayes, Iterated Conditional Modes, and non-probabilistic versions.
+Python classes for the BNMF and BNMTF models: Gibbs sampling, Variational Bayes, Iterated Conditional Modes, and non-probabilistic versions. Each class contains both the version with ARD, and without.
 - **/distributions/** - Contains code for obtaining draws of the exponential, Gaussian, and Truncated Normal distributions. Also has code for computing the expectation and variance of these distributions.
 - **/kmeans/** - Contains a class for performing K-means clustering on a matrix, when some of the values are unobserved. From my [other Github project](https://github.com/ThomasBrouwer/kmeans_missing).
 - **bnmf_gibbs.py** - Implementation of Gibbs sampler for Bayesian non-negative matrix factorisation (BNMF), extended to take into account missing values. Initially introduced by Schmidt et al. 2009.
@@ -43,8 +43,8 @@ Contains the drug sensitivity datasets (GDSC IC50, CCLE IC50, CCLE EC50, CTRP EC
 #### /experiments/
 - **/experiments_toy/** - Experiments on the toy data.
   - **/convergence/** - Measure convergence rate of the methods (against iterations and time) on the toy data.
-  - **/sparsity/** - Measure the predictive performance on missing values for varying sparsity levels.
   - **/noise/** - Measure the predictive performance on missing values for varying noise levels.
+  - **/sparsity/** - Measure the predictive performance on missing values for varying sparsity levels.
 - **/experiments_gdsc/** - Experiments on the Sanger GDSC IC50 dataset, as well as helper methods for loading in the data.
   - **/convergence/** - Measure convergence rate of the methods (against iterations and time) on the GDSC data.
   - **/grid_search/** - Measure the effectiveness of the line, grid, and greedy search model selection methods on the Sanger data.
