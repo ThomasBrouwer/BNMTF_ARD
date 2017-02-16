@@ -9,7 +9,7 @@ import sys
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmtf_icm import nmtf_icm
-from BNMTF_ARD.data_toy.bnmtf.generate_bnmtf import try_generate_M
+from BNMTF_ARD.data.toy.bnmtf.generate_bnmtf import try_generate_M
 from BNMTF_ARD.code.cross_validation.mask import calc_inverse_M
 
 import numpy, matplotlib.pyplot as plt
@@ -19,7 +19,7 @@ import numpy, matplotlib.pyplot as plt
 repeats = 10
 fractions_unknown = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95] #[ 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ]
 
-input_folder = project_location+"BNMTF_ARD/data_toy/bnmtf/"
+input_folder = project_location+"BNMTF_ARD/data/toy/bnmtf/"
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_toy/sparsity/results/"
 output_file = output_folder+'nmtf_icm_ard.txt'
 

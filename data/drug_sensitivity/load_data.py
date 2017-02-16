@@ -16,16 +16,18 @@ CCLE EC: 504,  24,      7626,      0.630456349206
 import numpy
 import itertools
 
-folder_gdsc_ic50 = './GDSC/processed_all/'
+folder_data = '/Users/thomasbrouwer/Documents/Projects/libraries/BNMTF_ARD/data/drug_sensitivity/'
+
+folder_gdsc_ic50 = folder_data+'GDSC/processed_all/'
 file_gdsc_ic50 = folder_gdsc_ic50+'ic50.txt'
 
-folder_ctrp_ec50 = './CTRP/processed_all/'
+folder_ctrp_ec50 = folder_data+'CTRP/processed_all/'
 file_ctrp_ec50 = folder_ctrp_ec50+'ec50.txt'
 
-folder_ccle_ic50 = './CCLE/processed_all/'
+folder_ccle_ic50 = folder_data+'CCLE/processed_all/'
 file_ccle_ic50 = folder_ccle_ic50+'ic50.txt'
 
-folder_ccle_ec50 = './CCLE/processed_all/'
+folder_ccle_ec50 = folder_data+'CCLE/processed_all/'
 file_ccle_ec50 = folder_ccle_ec50+'ec50.txt'
 
 DELIM = '\t'

@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 
 ''' Location of toy data, and where to store the performances. '''
-input_folder = project_location+"BNMTF_ARD/data_toy/bnmf/"
+input_folder = project_location+"BNMTF_ARD/data/toy/bnmf/"
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_toy/convergence/results/"
 output_file_performances = output_folder+'nmf_np_all_performances.txt'
 output_file_times = output_folder+'nmf_np_all_times.txt'

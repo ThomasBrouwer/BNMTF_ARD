@@ -15,7 +15,7 @@ import sys
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmtf_np import nmtf_np
-from BNMTF_ARD.data_toy.bnmtf.generate_bnmtf import add_noise, try_generate_M
+from BNMTF_ARD.data.toy.bnmtf.generate_bnmtf import add_noise, try_generate_M
 from BNMTF_ARD.code.cross_validation.mask import calc_inverse_M
 
 import numpy, matplotlib.pyplot as plt
@@ -26,7 +26,7 @@ repeats = 10
 fraction_unknown = 0.1
 noise_ratios = [ 0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5 ] # 1/SNR
 
-input_folder = project_location+"BNMTF_ARD/data_toy/bnmtf/"
+input_folder = project_location+"BNMTF_ARD/data/toy/bnmtf/"
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_toy/noise/results/"
 output_file = output_folder+'nmtf_np.txt'
 
