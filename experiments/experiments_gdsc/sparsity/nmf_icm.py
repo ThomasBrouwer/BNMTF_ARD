@@ -27,8 +27,8 @@ metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 2000
-burn_in = 1800
+iterations = 500
+burn_in = 450
 thinning = 2
 
 init_UV = 'random'
