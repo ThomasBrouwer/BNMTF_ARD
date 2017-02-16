@@ -7,26 +7,26 @@ import matplotlib.pyplot as plt
 
 ''' Plot settings. '''
 metrics = ['MSE']#,'R^2','Rp']
-MSE_max = 3
-time_max = 2
+MSE_min, MSE_max = 500, 1000
+time_max = 8
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"mse_nmf_times.png"
+plot_file = folder_plots+"mse_nmtf_times.png"
 
 
 ''' Load in the performances. '''
-vb_all_performances = eval(open(folder_results+'nmf_vb_all_performances.txt','r').read())
-gibbs_all_performances = eval(open(folder_results+'nmf_gibbs_all_performances.txt','r').read())
-icm_all_performances = eval(open(folder_results+'nmf_icm_all_performances.txt','r').read())
-np_all_performances = eval(open(folder_results+'nmf_np_all_performances.txt','r').read())
+vb_all_performances = eval(open(folder_results+'nmtf_vb_all_performances.txt','r').read())
+gibbs_all_performances = eval(open(folder_results+'nmtf_gibbs_all_performances.txt','r').read())
+icm_all_performances = eval(open(folder_results+'nmtf_icm_all_performances.txt','r').read())
+np_all_performances = eval(open(folder_results+'nmtf_np_all_performances.txt','r').read())
 
 
 ''' Load in the times. '''
-vb_all_times = eval(open(folder_results+'nmf_vb_all_times.txt','r').read())
-gibbs_all_times = eval(open(folder_results+'nmf_gibbs_all_times.txt','r').read())
-icm_all_times = eval(open(folder_results+'nmf_icm_all_times.txt','r').read())
-np_all_times = eval(open(folder_results+'nmf_np_all_times.txt','r').read())
+vb_all_times = eval(open(folder_results+'nmtf_vb_all_times.txt','r').read())
+gibbs_all_times = eval(open(folder_results+'nmtf_gibbs_all_times.txt','r').read())
+icm_all_times = eval(open(folder_results+'nmtf_icm_all_times.txt','r').read())
+np_all_times = eval(open(folder_results+'nmtf_np_all_times.txt','r').read())
 
 
 ''' Assemble the average performances and method names. '''
@@ -49,7 +49,7 @@ colours = ['r','b','g','c']
 ''' Plot the performances for the metrics specified. '''
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
-    fig.subplots_adjust(left=0.12, right=0.95, bottom=0.17, top=0.95)
+    fig.subplots_adjust(left=0.14, right=0.95, bottom=0.17, top=0.95)
     plt.xlabel("Time (s)", fontsize=8, labelpad=0)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
     plt.yticks(range(0,MSE_max+1),fontsize=6)
@@ -61,7 +61,8 @@ for metric in metrics:
         
     plt.xlim(0,time_max)
     if metric == 'MSE':
-        plt.ylim(0,MSE_max)
+        plt.yticks(range(0,MSE_max+1,100))
+        plt.ylim(MSE_min,MSE_max)
     elif metric == 'R^2' or metric == 'Rp':
         plt.ylim(0,1)
         
