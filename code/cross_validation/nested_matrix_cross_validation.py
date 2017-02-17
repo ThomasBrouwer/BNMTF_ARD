@@ -31,6 +31,8 @@ thus forming our :K training and test sets. Then for each we run the regular
 cross-validation framework to find the best parameters on the training dataset. 
 Then we train a model using these parameters, and evaluate it on the test set.
 The performances are stored in :file_performance.
+We use the row or column numbers to stratify the splitting of the entries into
+masks. If we have more rows, we use column numbers; and vice versa.
 
 We use the parallel matrix cross-validation module.
 
@@ -43,8 +45,9 @@ Methods:
     Also logs these findings to the file.
 """
 
-import mask
 from parallel_matrix_cross_validation import ParallelMatrixCrossValidation
+from mask import compute_folds_stratify_rows_attempts
+from mask import compute_folds_stratify_columns_attempts
 
 import numpy
 
@@ -71,9 +74,9 @@ class MatrixNestedCrossValidation:
         
     # Run the cross-validation
     def run(self):
-        folds_test = mask.compute_folds_attempts(I=self.I,J=self.J,no_folds=self.K,attempts=attempts_generate_M,M=self.M)
-        folds_training = mask.compute_Ms(folds_test)       
-
+        folds_method = compute_folds_stratify_rows_attempts if self.I < self.J else compute_folds_stratify_columns_attempts
+        folds_training, folds_test = folds_method(I=self.I, J=self.J, no_folds=self.K, attempts=attempts_generate_M, M=self.M)
+                
         for i,(train,test) in enumerate(zip(folds_training,folds_test)):
             print "Fold %s of nested cross-validation." % (i+1)            
             

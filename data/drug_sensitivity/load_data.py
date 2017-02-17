@@ -31,6 +31,7 @@ folder_ccle_ec50 = folder_data+'CCLE/processed_all/'
 file_ccle_ec50 = folder_ccle_ec50+'ec50.txt'
 
 DELIM = '\t'
+MIN_GDSC = 3 # minimum number of observed drugs per cell line
 
 def load_data_create_mask(location):
     ''' Load in .txt file, and set mask entries for nan to 0. '''
@@ -43,8 +44,11 @@ def load_data_create_mask(location):
     return (R, M)
 
 def load_gdsc_ic50(location=file_gdsc_ic50):
-    ''' Return (R_gdsc, M_gdsc). '''
-    return load_data_create_mask(location)
+    ''' Return (R_gdsc, M_gdsc). Filter out cell lines with fewer than :MIN_GDSC observed entries. '''
+    R, M = load_data_create_mask(location)
+    sum_per_cell_line = M.sum(axis=1)
+    indices_to_keep = [i for i in range(R.shape[0]) if sum_per_cell_line[i] >= MIN_GDSC]
+    return R[indices_to_keep,:], M[indices_to_keep,:]
 
 def load_ctrp_ec50(location=file_ctrp_ec50):
     ''' Return (R_ctrp, M_ctrp). '''

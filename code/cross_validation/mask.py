@@ -1,22 +1,50 @@
 """
-Methods for (randomly) generating a mask M of 1 values if a value is known, and
-0 if a value is unknown
+Methods for generating mask matrices, with 1 entries indicating observed and 0
+indicating unobserved.
+Provide methods for single mask matrices, and cross-validation folds.
 """
 
-import numpy, random, itertools
+import numpy
+import random
+import itertools
+from sklearn.cross_validation import StratifiedKFold
 
-# Generate a mask matrix M with <fraction> missing entries
-def generate_M(I,J,fraction):
-    M = numpy.ones([I,J])
-    values = random.sample(range(0,I*J),int(I*J*fraction))
-    for v in values:
-        M[v / J][v % J] = 0
-    return M
+
+''' Helpers. '''
+def compute_Ms(folds_M):
+    ''' Take in the ten fold M's, and construct the masks M for the other nine folds. '''
+    no_folds = len(folds_M)
+    folds_M = [numpy.array(fold_M) for fold_M in folds_M]
+    return [sum(folds_M[:fold]+folds_M[fold+1:]) for fold in range(0,no_folds)]
+
+
+def nonzero_indices(M):
+    ''' Return a list of indices of all nonzero indices in M. '''
+    (I,J) = numpy.array(M).shape
+    return [(i,j) for i,j in itertools.product(range(0,I),range(0,J)) if M[i][j]]
+
+
+def check_empty_rows_columns(M):
+    ''' Return True if all rows and columns have at least one observation. '''
+    sums_columns = M.sum(axis=0)
+    sums_rows = M.sum(axis=1)
+                
+    # Assert none of the rows or columns are entirely unknown values
+    for i,c in enumerate(sums_rows):
+        if c == 0:
+            return False
+    for j,c in enumerate(sums_columns):
+        if c == 0:
+            return False
+    return True
     
-# Given a mask matrix M, generate an even more sparse matrix M_test, and M_train (s.t. M_test+M_train=M)
-# The new mask matrix has <fraction> missing entries overall (so not fraction missing out of the observed entries, but out of all entries)
-def generate_M_from_M(M,fraction):
-    I,J = M.shape
+
+''' Generating methods. '''
+def generate_M(I,J,fraction,M=None):
+    ''' Generate a mask matrix M_train with :fraction missing entries. 
+        If :M is defined, use only those 1-entries. '''
+    if M is None:
+        M = numpy.ones((I,J))
     indices = nonzero_indices(M)
     no_elements = len(indices)
     no_missing_total = I*J - no_elements
@@ -35,20 +63,23 @@ def generate_M_from_M(M,fraction):
     assert numpy.array_equal(M,M_train+M_test), "Tried splitting M into M_test and M_train but something went wrong."
     return M_train, M_test
     
-def try_generate_M_from_M(M,fraction,attempts):
-    for i in range(0,attempts):
-        M_train,M_test = generate_M_from_M(M,fraction)
+    
+def try_generate_M(I,J,fraction,attempts,M=None):
+    ''' Try generate_M() :attempts times, making sure each row and column has 
+        at least one observed entry. '''
+    for i in range(attempts):
+        M_train,M_test = generate_M(M,fraction)
         if check_empty_rows_columns(M_train):
             return M_train,M_test
     assert False, "Failed to generate folds for training and test data, %s attempts, fraction %s." % (attempts,fraction)
 
-# Compute <no_folds> folds, returning a list of M's. If M is defined, we split
-# only the 1 entries into the folds.
+
 def compute_folds(I,J,no_folds,M=None):
+    ''' Compute :no_folds cross-validation masks.
+        Return a tuple (Ms_train, Ms_test), both a list of masks.
+        If M is defined, split only the 1 entries into the folds. '''
     if M is None:
         M = numpy.ones((I,J))
-    else:
-        M = numpy.array(M)
         
     no_elements = sum([len([v for v in row if v]) for row in M])
     indices = nonzero_indices(M)
@@ -57,119 +88,86 @@ def compute_folds(I,J,no_folds,M=None):
     split_places = [int(i*no_elements/no_folds) for i in range(0,no_folds+1)] #find the indices where the next fold start
     split_indices = [indices[split_places[i]:split_places[i+1]] for i in range(0,no_folds)] #split the indices list into the folds
     
-    folds_M = [] #list of the M's for the different folds
+    Ms_train, Ms_test = [], [] # list of the M's for the different folds
     for indices in split_indices:
-        M = numpy.zeros((I,J))
+        M_train = numpy.zeros((I,J))
         for i,j in indices:
-            M[i][j] = 1
-        folds_M.append(M)
+            M_train[i][j] = 1
+        M_test = M - M_train
+        Ms_train.append(M_train)
+        Ms_test.append(M_test)
         
-    return folds_M
+    return (Ms_train, Ms_test)
     
-# Make n attempts to generate the folds with the training data having at least 1 observed entry per row and column
+
 def compute_folds_attempts(I,J,no_folds,attempts,M=None):
-    for i in range(0,attempts):
-        folds_M = compute_folds(I=I,J=J,no_folds=no_folds,M=M)
+    ''' Try generate_M() :attempts times, making sure each row and column of
+        M_train has at least one observed entry. '''
+    for i in range(attempts):
+        Ms_train, Ms_test = compute_folds(I=I,J=J,no_folds=no_folds,M=M)
         success = True
-        for M_test in folds_M:
-            M_train = M - M_test
+        for M_train in Ms_train:
             if not check_empty_rows_columns(M_train):
                 success = False
         if success:
-            return folds_M
+            return Ms_train, Ms_test
     assert False, "Failed to generate folds for training and test data, %s attempts." % attempts
     
-''' Make cross-validation folds, but only use the first amount of specified rows 
-    or columns for the cross-validation splitting.
-    Return a list of (train,test) matrices M. '''
-def compute_crossval_folds_rows_attempts(M,no_rows,no_folds,attempts):
-    I, J = M.shape
-    M_rows = M[:no_rows]
-    M_rest = M[no_rows:]  
-        
-    test_folds_M_rows = compute_folds_attempts(no_rows,J,no_folds,attempts,M_rows)
     
-    train_folds_M, test_folds_M = [], []
-    for test_fold_M_rows in test_folds_M_rows:
-        # The train fold gets the rest of M, the test fold gets zeros there
-        train_fold_M_rows = M_rows - test_fold_M_rows
-        train_fold_M = numpy.concatenate((train_fold_M_rows,M_rest),axis=0)
-        test_fold_M = numpy.concatenate((test_fold_M_rows,numpy.zeros((I-no_rows,J))),axis=0)
-        
-        train_folds_M.append(train_fold_M)
-        test_folds_M.append(test_fold_M)
-        
-    return zip(train_folds_M,test_folds_M)
-    
-def compute_crossval_folds_columns_attempts(M,no_columns,no_folds,attempts):
-    I, J = M.shape
-    M_rows = M[:,:no_columns]
-    M_rest = M[:,no_columns:]  
-        
-    test_folds_M_rows = compute_folds_attempts(I,no_columns,no_folds,attempts,M_rows)
-    
-    train_folds_M, test_folds_M = [], []
-    for test_fold_M_rows in test_folds_M_rows:
-        # The train fold gets the rest of M, the test fold gets zeros there
-        train_fold_M_rows = M_rows - test_fold_M_rows
-        train_fold_M = numpy.concatenate((train_fold_M_rows,M_rest),axis=1)
-        test_fold_M = numpy.concatenate((test_fold_M_rows,numpy.zeros((I,J-no_columns))),axis=1)
-        
-        train_folds_M.append(train_fold_M)
-        test_folds_M.append(test_fold_M)
-        
-    return zip(train_folds_M,test_folds_M)
-    
-# Return True if all rows and columns have at least one observation
-def check_empty_rows_columns(M):
-    sums_columns = M.sum(axis=0)
-    sums_rows = M.sum(axis=1)
-                
-    # Assert none of the rows or columns are entirely unknown values
-    for i,c in enumerate(sums_rows):
-        if c == 0:
-            return False
-    for j,c in enumerate(sums_columns):
-        if c == 0:
-            return False
-    return True
-    
-# Take in the ten fold M's, and construct the masks M for the other nine folds
-def compute_Ms(folds_M):
-    no_folds = len(folds_M)
-    folds_M = [numpy.array(fold_M) for fold_M in folds_M]
-    return [sum(folds_M[:fold]+folds_M[fold+1:]) for fold in range(0,no_folds)]
+def compute_folds_stratify_rows(I,J,no_folds,M=None):
+    ''' Run compute_folds() but make sure each fold has the same number of 
+        entries of each row - i.e. we stratify the folds based on rows. 
+        This could still create an empty column though. '''
+    if M is None:
+        M = numpy.ones((I,J))
 
-def calc_inverse_M(M):
-    (I,J) = numpy.array(M).shape
-    M_inv = numpy.ones([I,J])
-    for i in range(0,I):
-        for j in range(0,J):
-            if M[i][j] == 1:
-                M_inv[i][j] = 0
-    return M_inv
+    # Use skikit-learn stratified folds, using the row index as the labels
+    indices = nonzero_indices(M)
+    labels = [ind[0] for ind in indices]
+    skf = StratifiedKFold(labels, no_folds, shuffle=True)
+    Ms_train, Ms_test = [], []
+    for _, test in skf:
+        M_test = numpy.zeros(M.shape)
+        for label_index in test:
+            i,j = indices[label_index]
+            M_test[i,j] = 1.
+        M_train = M - M_test
+        Ms_train.append(M_train), Ms_test.append(M_test)
+    return Ms_train, Ms_test
     
-# Return a list of indices of all nonzero indices in M
-def nonzero_indices(M):
-    (I,J) = numpy.array(M).shape
-    return [(i,j) for i,j in itertools.product(range(0,I),range(0,J)) if M[i][j]]
-    
-# Return a list of lists, the ith list being of all indices j s.t. M[i,j] != 0
-def nonzero_row_indices(M):
-    (I,J) = numpy.array(M).shape
-    return [[j for j,v in enumerate(row) if v] for row in M]
-    
-def nonzero_column_indices(M):
-    M = numpy.array(M)
-    (I,J) = numpy.array(M).shape
-    return [[i for i,v in enumerate(column) if v] for column in M.T]
 
-# Return a list of tuples of the actual value vs the predicted value, for nonzero elements in M
-def recover_predictions(M,X_true,X_pred):
-    (I,J) = numpy.array(M).shape
-    actual_vs_predicted = []
-    for i in range(0,I):
-        for j in range(0,J):
-            if M[i][j] == 0:
-                actual_vs_predicted.append((X_true[i][j],X_pred[i][j]))
-    return (actual_vs_predicted)
+def compute_folds_stratify_rows_attempts(I,J,no_folds,attempts,M=None):     
+    ''' Try compute_folds_stratify_rows() :attempts times, making sure each row 
+        and column of M_train has at least one observed entry. '''
+    for i in range(attempts):
+        Ms_train, Ms_test = compute_folds_stratify_rows(I=I,J=J,no_folds=no_folds,M=M)
+        success = True
+        for M_train in Ms_train:
+            if not check_empty_rows_columns(M_train):
+                success = False
+        if success:
+            return Ms_train, Ms_test
+    assert False, "Failed to generate folds for training and test data, %s attempts." % attempts
+
+        
+def compute_folds_stratify_columns(I,J,no_folds,M=None):
+    ''' Same as compute_folds_stratify_rows() but now stratify by column. '''
+    Ms_train_T, Ms_test_T = compute_folds_stratify_rows(I=J, J=I, no_folds=no_folds, M=M.T if M is not None else None)
+    Ms_train, Ms_test = [M_train.T for M_train in Ms_train_T], [M_test.T for M_test in Ms_test_T]
+    return (Ms_train, Ms_test)
+    
+    
+def compute_folds_stratify_columns_attempts(I,J,no_folds,attempts,M=None):     
+    ''' Try compute_folds_stratify_columns() :attempts times, making sure each row 
+        and column of M_train has at least one observed entry. '''
+    for i in range(attempts):
+        Ms_train, Ms_test = compute_folds_stratify_columns(I=I,J=J,no_folds=no_folds,M=M)
+        success = True
+        for M_train in Ms_train:
+            if not check_empty_rows_columns(M_train):
+                success = False
+        if success:
+            return Ms_train, Ms_test
+    assert False, "Failed to generate folds for training and test data, %s attempts." % attempts
+
+

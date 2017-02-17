@@ -23,11 +23,13 @@ We expect the following arguments:
     This should be a dictionary mapping parameter names to values 
 - file_performance, the location and name of the file in which we store the performances.
 
-For each of the parameter configurations in <parameter_search>, we split the
-dataset :R into :K folds (considering only 1 entries in <M>), and thus form
+For each of the parameter configurations in :parameter_search, we split the
+dataset :R into :K folds (considering only 1 entries in :M), and thus form
 our :K training and test sets. Then for each we train the model using the 
 parameters and training configuration :train_config. The performances are 
 stored in :file_performance.
+We use the row or column numbers to stratify the splitting of the entries into
+masks. If we have more rows, we use column numbers; and vice versa.
 
 Methods:
 - Constructor - simply takes in the arguments requires
@@ -38,7 +40,8 @@ Methods:
     Also logs these findings to the file.
 """
 
-import mask
+from mask import compute_folds_stratify_rows_attempts
+from mask import compute_folds_stratify_columns_attempts
 
 import numpy
 import json
@@ -63,14 +66,14 @@ class MatrixCrossValidation:
         self.performances = {}          # Average performances per criterion - mapping evaluation criterion to a list of average performances (same size as parameter_search)
         
         
-    # Run the cross-validation
     def run(self):
+        ''' Run the cross-validation. '''
         for parameters in self.parameter_search:
             print "Trying parameters %s." % (parameters)
             
             try:
-                folds_test = mask.compute_folds_attempts(I=self.I,J=self.J,no_folds=self.K,attempts=attempts_generate_M,M=self.M)
-                folds_training = mask.compute_Ms(folds_test)
+                folds_method = compute_folds_stratify_rows_attempts if self.I < self.J else compute_folds_stratify_columns_attempts
+                folds_training, folds_test = folds_method(I=self.I, J=self.J, no_folds=self.K, attempts=attempts_generate_M, M=self.M)
                 
                 # We need to put the parameter dict into json to hash it
                 self.all_performances[self.JSON(parameters)] = {}
@@ -86,32 +89,31 @@ class MatrixCrossValidation:
                 self.fout.flush()
             
             
-    # Initialises and runs the model, and returns the performance on the test set
     def run_model(self,train,test,parameters):
+        ''' Initialises and runs the model, and returns the performance on the test set. '''
         model = self.method(self.R,train,**parameters)
         model.train(**self.train_config)
         return model.predict(test)
         
-    # Returns the sorted json of the dictionary given
     def JSON(self,d):
+        ''' Returns the sorted json of the dictionary given. '''
         # Cannot handle numpy arrays so force all numpy arrays to be lists
         d_copy = d.copy()
         for key,val in d.iteritems():
             if isinstance(val,numpy.ndarray):
                 d_copy[key] = val.tolist()
-                
         return json.dumps(d_copy,sort_keys=True)            
-            
-    # Store the performances we get back in a dictionary from criterion name to a list of performances
+      
     def store_performances(self,performance_dict,parameters):
+        ''' Store the performances we get back in a dictionary from criterion name to a list of performances. '''
         for name in performance_dict:
             if name in self.all_performances[self.JSON(parameters)]:
                 self.all_performances[self.JSON(parameters)][name].append(performance_dict[name])
             else:
                 self.all_performances[self.JSON(parameters)][name] = [performance_dict[name]]
-              
-    # Compute the average performance of the given parameters, across the K folds
+      
     def compute_average_performances(self,parameters):
+        ''' Compute the average performance of the given parameters, across the K folds. '''
         performances = self.all_performances[self.JSON(parameters)]     
         average_performances = { name:(sum(values)/float(len(values))) for (name,values) in performances.iteritems() }
         self.average_performances[self.JSON(parameters)] = average_performances
@@ -122,9 +124,9 @@ class MatrixCrossValidation:
                 self.performances[name].append(avr_perf)
             else:
                 self.performances[name] = [avr_perf]
-        
-    # Finds the parameter values of the best performance for the specified criterion
+      
     def find_best_parameters(self,evaluation_criterion,low_better):
+        ''' Finds the parameter values of the best performance for the specified criterion. '''
         min_or_max = min if low_better else max
         self.best_performance = min_or_max(self.performances[evaluation_criterion])
         index_best = self.performances[evaluation_criterion].index(self.best_performance)
@@ -134,16 +136,16 @@ class MatrixCrossValidation:
         
         self.log_best(index_best)
         return (self.best_parameters,self.best_performance)
-        
-    # Logs the performances for specific parameter values
+      
     def log(self,parameters):
+        ''' Logs the performances for specific parameter values. '''
         self.compute_average_performances(parameters)
         message = "Tried parameters %s. Average performances: %s. \nAll performances: %s. \n" % (parameters,self.average_performances[self.JSON(parameters)],self.all_performances[self.JSON(parameters)])
         self.fout.write(message)
         self.fout.flush()
-                     
-    # Logs the best performances and parameters
+      
     def log_best(self,index_best):
+        ''' Logs the best performances and parameters. '''
         message = "Best performances: %s. Best parameters: %s. \n" % (self.best_performances_all,self.best_parameters)
         self.fout.write(message)
         self.fout.flush()

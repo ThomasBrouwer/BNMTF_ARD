@@ -5,8 +5,9 @@ We now have an extra parameter P for the initialisation, defining the number
 of parallel threads we should run.
 """
 
-import mask
 from matrix_cross_validation import MatrixCrossValidation
+from mask import compute_folds_stratify_rows_attempts
+from mask import compute_folds_stratify_columns_attempts
 
 from multiprocessing import Pool
 import numpy
@@ -42,8 +43,8 @@ class ParallelMatrixCrossValidation(MatrixCrossValidation):
             print "Trying parameters %s." % (parameters)
             
             try:
-                folds_test = mask.compute_folds_attempts(I=self.I,J=self.J,no_folds=self.K,attempts=attempts_generate_M,M=self.M)
-                folds_training = mask.compute_Ms(folds_test)
+                folds_method = compute_folds_stratify_rows_attempts if self.I < self.J else compute_folds_stratify_columns_attempts
+                folds_training, folds_test = folds_method(I=self.I, J=self.J, no_folds=self.K, attempts=attempts_generate_M, M=self.M)
                 
                 # We need to put the parameter dict into json to hash it
                 self.all_performances[self.JSON(parameters)] = {}
