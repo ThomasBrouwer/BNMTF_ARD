@@ -21,6 +21,9 @@ We expect the following arguments:
     defining the space of our parameter search.
 - train_config, the additional parameters to pass to the train function (e.g. no. of iterations).
     This should be a dictionary mapping parameter names to values 
+- predict_config, the additional parameters to pass to the predict function 
+    (e.g. burn_in and thinning). This should be a dictionary mapping parameter 
+    names to values.
 - file_performance, the location and name of the file in which we store the 
     overall performances of the nested cross-validations.
 - files_nested_performances, a list of K locations+names of the files in which
@@ -38,13 +41,15 @@ We use the parallel matrix cross-validation module.
 
 Methods:
 - Constructor - simply takes in the arguments requires
-- run - no arguments, runs the cross validation and stores the results in the file
+- run - one argument (parallel), runs the cross validation and stores the 
+    results in the file. If parallel=True, run the folds in parallel.
 - find_best_parameters - takes in the name of the evaluation criterion (e.g. 
     'MSE'), and True if low is better (False if high is better), and returns 
     the best parameters based on that, in a tuple with all the performances.
     Also logs these findings to the file.
 """
 
+from matrix_cross_validation import MatrixCrossValidation
 from parallel_matrix_cross_validation import ParallelMatrixCrossValidation
 from mask import compute_folds_stratify_rows_attempts
 from mask import compute_folds_stratify_columns_attempts
@@ -54,13 +59,14 @@ import numpy
 attempts_generate_M = 1000
 
 class MatrixNestedCrossValidation:
-    def __init__(self,method,R,M,K,P,parameter_search,train_config,file_performance,files_nested_performances):
+    def __init__(self,method,R,M,K,P,parameter_search,train_config,predict_config,file_performance,files_nested_performances):
         self.method = method
         self.R = numpy.array(R,dtype=float)
         self.M = numpy.array(M)
         self.K = K
         self.P = P
         self.train_config = train_config
+        self.predict_config = predict_config
         self.parameter_search = parameter_search
         self.files_nested_performances = files_nested_performances        
         
@@ -72,8 +78,8 @@ class MatrixNestedCrossValidation:
         self.average_performances = {}  # Average performances across folds - dictionary from evaluation criteria to average performance
         
         
-    # Run the cross-validation
-    def run(self):
+    def run(self, parallel=True):
+        ''' Run the cross-validation. '''
         folds_method = compute_folds_stratify_rows_attempts if self.I < self.J else compute_folds_stratify_columns_attempts
         folds_training, folds_test = folds_method(I=self.I, J=self.J, no_folds=self.K, attempts=attempts_generate_M, M=self.M)
                 
@@ -82,15 +88,24 @@ class MatrixNestedCrossValidation:
             
             # Run the cross-validation
             crossval = ParallelMatrixCrossValidation(
-            #crossval = MatrixCrossValidation(
                 method=self.method,
                 R=self.R,
                 M=train,
                 K=self.K,
                 parameter_search=self.parameter_search,
                 train_config=self.train_config,
+                predict_config=self.predict_config,
                 file_performance=self.files_nested_performances[i],
-                P=self.P
+                P=self.P,
+            ) if parallel else MatrixCrossValidation(
+                method=self.method,
+                R=self.R,
+                M=train,
+                K=self.K,
+                parameter_search=self.parameter_search,
+                train_config=self.train_config,
+                predict_config=self.predict_config,
+                file_performance=self.files_nested_performances[i],
             )
             crossval.run()
             
@@ -108,29 +123,32 @@ class MatrixNestedCrossValidation:
             
         self.log()
             
-            
-    # Initialises and runs the model, and returns the performance on the test set
+      
     def run_model(self,train,test,parameters):  
+        ''' Initialises and runs the model, and returns the performance on the test set. '''
         model = self.method(self.R,train,**parameters)
         model.train(**self.train_config)
-        return model.predict(test)
+        return model.predict(test,**self.predict_config)
         
-    # Store the performances we get back in a dictionary from criterion name to a list of performances
+    
     def store_performances(self,performance_dict):
+        ''' Store the performances we get back in a dictionary from criterion name to a list of performances. '''
         for name in performance_dict:
             if name in self.all_performances:
                 self.all_performances[name].append(performance_dict[name])
             else:
                 self.all_performances[name] = [performance_dict[name]]
               
-    # Compute the average performance of the given parameters, across the K folds
+    
     def compute_average_performances(self):
+        ''' Compute the average performance of the given parameters, across the K folds. '''
         performances = self.all_performances     
         average_performances = { name:(sum(values)/float(len(values))) for (name,values) in performances.iteritems() }
         self.average_performances = average_performances
         
-    # Logs the performance on the test set for this fold
+    
     def log(self):
+        ''' Logs the performance on the test set for this fold. '''
         self.compute_average_performances()
         message = "Average performances: %s. \nAll performances: %s. \n" % (self.average_performances,self.all_performances)
         self.fout.write(message)

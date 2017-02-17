@@ -38,6 +38,10 @@ def check_empty_rows_columns(M):
             return False
     return True
     
+def calc_inverse_M (M):
+    ''' Return the inverse of M. '''
+    return numpy.ones(M.shape) - M
+    
 
 ''' Generating methods. '''
 def generate_M(I,J,fraction,M=None):

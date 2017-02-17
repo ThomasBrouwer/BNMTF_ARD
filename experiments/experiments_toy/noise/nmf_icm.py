@@ -15,8 +15,9 @@ import sys
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmf_icm import nmf_icm
-from BNMTF_ARD.data.toy.bnmf.generate_bnmf import add_noise, try_generate_M
+from BNMTF_ARD.data.toy.bnmf.generate_bnmf import add_noise
 from BNMTF_ARD.code.cross_validation.mask import calc_inverse_M
+from BNMTF_ARD.code.cross_validation.mask import try_generate_M
 
 import numpy, matplotlib.pyplot as plt
 

@@ -19,8 +19,12 @@ We expect the following arguments:
 - K, the number of folds for cross-validation.
 - parameter_search, a list of dictionaries from parameter names to values, 
     defining the space of our parameter search.
-- train_config, the additional parameters to pass to the train function (e.g. no. of iterations).
-    This should be a dictionary mapping parameter names to values 
+- train_config, the additional parameters to pass to the train function (e.g. 
+    no. of iterations). This should be a dictionary mapping parameter names to 
+    values.
+- predict_config, the additional parameters to pass to the predict function 
+    (e.g. burn_in and thinning). This should be a dictionary mapping parameter 
+    names to values.
 - file_performance, the location and name of the file in which we store the performances.
 
 For each of the parameter configurations in :parameter_search, we split the
@@ -49,12 +53,13 @@ import json
 attempts_generate_M = 1000
 
 class MatrixCrossValidation:
-    def __init__(self,method,R,M,K,parameter_search,train_config,file_performance):
+    def __init__(self,method,R,M,K,parameter_search,train_config,predict_config,file_performance):
         self.method = method
         self.R = numpy.array(R,dtype=float)
         self.M = numpy.array(M)
         self.K = K
         self.train_config = train_config
+        self.predict_config = predict_config
         self.parameter_search = parameter_search
         
         self.fout = open(file_performance,'w')
@@ -93,7 +98,7 @@ class MatrixCrossValidation:
         ''' Initialises and runs the model, and returns the performance on the test set. '''
         model = self.method(self.R,train,**parameters)
         model.train(**self.train_config)
-        return model.predict(test)
+        return model.predict(test,**self.predict_config)
         
     def JSON(self,d):
         ''' Returns the sorted json of the dictionary given. '''

@@ -9,8 +9,8 @@ import sys
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmf_vb import bnmf_vb
-from BNMTF_ARD.data.toy.bnmf.generate_bnmf import try_generate_M
 from BNMTF_ARD.code.cross_validation.mask import calc_inverse_M
+from BNMTF_ARD.code.cross_validation.mask import try_generate_M
 
 import numpy, matplotlib.pyplot as plt
 

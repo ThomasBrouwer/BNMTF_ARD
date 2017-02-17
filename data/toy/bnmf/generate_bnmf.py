@@ -20,7 +20,6 @@ sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.distributions.exponential import exponential_draw
 from BNMTF_ARD.code.models.distributions.normal import normal_draw
-from BNMTF_ARD.code.cross_validation.mask import generate_M
 
 import numpy, itertools, matplotlib.pyplot as plt
 
@@ -49,22 +48,6 @@ def add_noise(true_R,tau):
         R[i,j] = normal_draw(true_R[i,j],tau)
     return R
     
-def try_generate_M(I,J,fraction_unknown,attempts):
-    for attempt in range(1,attempts+1):
-        try:
-            M = generate_M(I,J,fraction_unknown)
-            sums_columns = M.sum(axis=0)
-            sums_rows = M.sum(axis=1)
-            for i,c in enumerate(sums_rows):
-                assert c != 0, "Fully unobserved row in M, row %s. Fraction %s." % (i,fraction_unknown)
-            for j,c in enumerate(sums_columns):
-                assert c != 0, "Fully unobserved column in M, column %s. Fraction %s." % (j,fraction_unknown)
-            print "Took %s attempts to generate M." % attempt
-            return M
-        except AssertionError:
-            pass
-    raise Exception("Tried to generate M %s times, with I=%s, J=%s, fraction=%s, but failed." % (attempts,I,J,fraction_unknown))
-      
 ##########
 
 if __name__ == "__main__":
@@ -79,15 +62,11 @@ if __name__ == "__main__":
     
     (U,V,tau,true_R,R) = generate_dataset(I,J,K,lambdaU,lambdaV,tau)
     
-    # Try to generate M
-    M = try_generate_M(I,J,fraction_unknown,attempts=1000)
-    
     # Store all matrices in text files
     numpy.savetxt(open(output_folder+"U.txt",'w'),U)
     numpy.savetxt(open(output_folder+"V.txt",'w'),V)
     numpy.savetxt(open(output_folder+"R_true.txt",'w'),true_R)
     numpy.savetxt(open(output_folder+"R.txt",'w'),R)
-    numpy.savetxt(open(output_folder+"M.txt",'w'),M)
     
     print "Mean R: %s. Variance R: %s. Min R: %s. Max R: %s." % (numpy.mean(R),numpy.var(R),R.min(),R.max())
     fig = plt.figure()
