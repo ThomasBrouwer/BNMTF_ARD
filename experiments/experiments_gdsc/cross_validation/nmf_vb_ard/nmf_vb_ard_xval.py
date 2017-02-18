@@ -1,5 +1,5 @@
 """
-Run the nested cross-validation for the VB NMF class, on the GDSC dataset.
+Run the nested cross-validation for the VB NMF class with ARD, on the GDSC dataset.
 """
 
 project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
@@ -7,12 +7,13 @@ import sys
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmf_vb import bnmf_vb
-from BNMTF_ARD.code.cross_validation.nested_matrix_cross_validation import MatrixNestedCrossValidation
+from BNMTF_ARD.code.cross_validation.matrix_single_cross_validation import MatrixSingleCrossValidation
 from BNMTF_ARD.data.drug_sensitivity.load_data import load_gdsc_ic50
 
 
 ''' Settings NMF. '''
-ARD = False
+K = 20
+ARD = True
 lambdaU = 0.1
 lambdaV = 0.1
 alphatau, betatau = 1., 1.
@@ -24,19 +25,11 @@ train_config = {
     'init_UV' : 'random',
 }
 predict_config = {}
-
+parameters = {'K':K, 'ARD':ARD, 'hyperparameters':hyperparams}
 
 ''' Settings nested cross-validation. '''
-K_range = [4,5,6,7,8,9]
 no_folds = 10
-no_threads = 5
-parallel = False
 output_file = "./results.txt"
-files_nested_performances = ["./fold_%s.txt" % fold for fold in range(1,no_folds+1)]
-
-
-''' Construct the parameter search. '''
-parameter_search = [{'K':K, 'ARD':ARD, 'hyperparameters':hyperparams} for K in K_range]
 
 
 ''' Load in the Sanger dataset. '''
@@ -44,16 +37,14 @@ R, M = load_gdsc_ic50()
 
 
 ''' Run the cross-validation framework. '''
-nested_crossval = MatrixNestedCrossValidation(
+crossval = MatrixSingleCrossValidation(
     method=bnmf_vb,
     R=R,
     M=M,
     K=no_folds,
-    P=no_threads,
-    parameter_search=parameter_search,
+    parameters=parameters,
     train_config=train_config,
     predict_config=predict_config,
     file_performance=output_file,
-    files_nested_performances=files_nested_performances,
 )
-nested_crossval.run(parallel=parallel)
+crossval.run()

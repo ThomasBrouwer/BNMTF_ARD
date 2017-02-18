@@ -53,7 +53,7 @@ ALL_QUALITY = ['loglikelihood','BIC','AIC','MSE','ELBO']
 OPTIONS_INIT_UV = ['random', 'exp']
 
 class bnmf_vb:
-    def __init__(self,R,M,K,ARD,priors):
+    def __init__(self,R,M,K,ARD,hyperparameters):
         ''' Set up the class and do some checks on the values passed. '''
         self.R = numpy.array(R,dtype=float)
         self.M = numpy.array(M,dtype=float)
@@ -69,11 +69,11 @@ class bnmf_vb:
         self.size_Omega = self.M.sum()
         self.check_empty_rows_columns()      
         
-        self.alphatau, self.betatau = float(priors['alphatau']), float(priors['betatau'])
+        self.alphatau, self.betatau = float(hyperparameters['alphatau']), float(hyperparameters['betatau'])
         if self.ARD:
-            self.alpha0, self.beta0 = float(priors['alpha0']), float(priors['beta0'])
+            self.alpha0, self.beta0 = float(hyperparameters['alpha0']), float(hyperparameters['beta0'])
         else:
-            self.lambdaU, self.lambdaV = numpy.array(priors['lambdaU']), numpy.array(priors['lambdaV'])
+            self.lambdaU, self.lambdaV = numpy.array(hyperparameters['lambdaU']), numpy.array(hyperparameters['lambdaV'])
             # Make lambdaU/V into a numpy array if they are an integer
             if self.lambdaU.shape == ():
                 self.lambdaU = self.lambdaU * numpy.ones((self.I,self.K))

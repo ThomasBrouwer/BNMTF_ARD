@@ -1,33 +1,32 @@
 """
-Run the nested cross-validation for the VB NMF class, on the GDSC dataset.
+Run the nested cross-validation for the NMF class, on the GDSC dataset.
 """
 
 project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
-from BNMTF_ARD.code.models.bnmf_vb import bnmf_vb
+from BNMTF_ARD.code.models.nmtf_np import nmtf_np
 from BNMTF_ARD.code.cross_validation.nested_matrix_cross_validation import MatrixNestedCrossValidation
 from BNMTF_ARD.data.drug_sensitivity.load_data import load_gdsc_ic50
 
+import itertools
+
 
 ''' Settings NMF. '''
-ARD = False
-lambdaU = 0.1
-lambdaV = 0.1
-alphatau, betatau = 1., 1.
-alpha0, beta0 = 1., 1.
-hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaU':lambdaU, 'lambdaV':lambdaV }
-
 train_config = {
-    'iterations' : 200,
-    'init_UV' : 'random',
+    'iterations' : 1000,
+    'init_FG' : 'kmeans',
+    'init_S' : 'exponential',
+    'expo_prior' : 0.1
 }
 predict_config = {}
 
 
 ''' Settings nested cross-validation. '''
-K_range = [4,5,6,7,8,9]
+KL_range = [4,5,6,7]
+K_range = [5,6,7,8]
+L_range = [5,6,7,8]
 no_folds = 10
 no_threads = 5
 parallel = False
@@ -36,7 +35,7 @@ files_nested_performances = ["./fold_%s.txt" % fold for fold in range(1,no_folds
 
 
 ''' Construct the parameter search. '''
-parameter_search = [{'K':K, 'ARD':ARD, 'hyperparameters':hyperparams} for K in K_range]
+parameter_search = [{'K':KL,'L':KL} for KL in KL_range] # [{'K':K,'L':L} for K,L in itertools.product(K_range,L_range)]
 
 
 ''' Load in the Sanger dataset. '''
@@ -45,7 +44,7 @@ R, M = load_gdsc_ic50()
 
 ''' Run the cross-validation framework. '''
 nested_crossval = MatrixNestedCrossValidation(
-    method=bnmf_vb,
+    method=nmtf_np,
     R=R,
     M=M,
     K=no_folds,

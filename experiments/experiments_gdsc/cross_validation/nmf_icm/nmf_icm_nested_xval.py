@@ -1,12 +1,12 @@
 """
-Run the nested cross-validation for the VB NMF class, on the GDSC dataset.
+Run the nested cross-validation for the Gibbs NMF class, on the GDSC dataset.
 """
 
 project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
-from BNMTF_ARD.code.models.bnmf_vb import bnmf_vb
+from BNMTF_ARD.code.models.nmf_icm import nmf_icm
 from BNMTF_ARD.code.cross_validation.nested_matrix_cross_validation import MatrixNestedCrossValidation
 from BNMTF_ARD.data.drug_sensitivity.load_data import load_gdsc_ic50
 
@@ -20,14 +20,17 @@ alpha0, beta0 = 1., 1.
 hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaU':lambdaU, 'lambdaV':lambdaV }
 
 train_config = {
-    'iterations' : 200,
+    'iterations' : 500,
     'init_UV' : 'random',
 }
-predict_config = {}
+predict_config = {
+    'burn_in' : 450,
+    'thinning' : 2,
+}
 
 
 ''' Settings nested cross-validation. '''
-K_range = [4,5,6,7,8,9]
+K_range = [1,2,3,4,5,6]
 no_folds = 10
 no_threads = 5
 parallel = False
@@ -45,7 +48,7 @@ R, M = load_gdsc_ic50()
 
 ''' Run the cross-validation framework. '''
 nested_crossval = MatrixNestedCrossValidation(
-    method=bnmf_vb,
+    method=nmf_icm,
     R=R,
     M=M,
     K=no_folds,
