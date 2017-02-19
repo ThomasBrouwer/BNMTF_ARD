@@ -1,5 +1,5 @@
 """
-Run the nested cross-validation for the NMF class, on the GDSC dataset.
+Run the nested cross-validation for the NP NMTF class, on the GDSC dataset.
 """
 
 project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"

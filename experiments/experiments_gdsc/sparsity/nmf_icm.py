@@ -1,5 +1,5 @@
 '''
-Test the performance of ICM sampling for recovering a toy dataset, where we 
+Test the performance of ICM sampling for recovering the GDSC dataset, where we 
 vary the fraction of entries that are missing.
 We repeat this 10 times per fraction and average that.
 '''
@@ -10,7 +10,7 @@ sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmf_icm import nmf_icm
 from BNMTF_ARD.data.drug_sensitivity.load_data import load_gdsc_ic50
-from BNMTF_ARD.code.cross_validation.mask import try_generate_M_from_M
+from BNMTF_ARD.code.cross_validation.mask import try_generate_M
 from BNMTF_ARD.code.cross_validation.mask import calc_inverse_M
 
 import matplotlib.pyplot as plt
@@ -32,7 +32,7 @@ burn_in = 450
 thinning = 2
 
 init_UV = 'random'
-K = 20
+K = 5
 ARD = False
 
 lambdaU, lambdaV = 0.1, 0.1
@@ -43,15 +43,16 @@ hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0'
 
 ''' Load in data. '''
 R, M = load_gdsc_ic50()
+I, J = M.shape
 
 
 ''' Generate matrices M - one list of M's for each fraction. '''
 M_attempts = 1000
 all_Ms = [ 
-    [try_generate_M_from_M(M,fraction,M_attempts)[0] for r in range(repeats)]
+    [try_generate_M(I=I,J=J,fraction=fraction,attempts=M_attempts,M=M)[0] for r in range(repeats)]
     for fraction in fractions_unknown
 ]
-all_Ms_test = [ [calc_inverse_M(M_train) for M_train in Ms] for Ms in all_Ms ]
+all_Ms_test = [ [calc_inverse_M(M_train, M_combined=M) for M_train in Ms] for Ms in all_Ms ]
 
 
 ''' Make sure each M has no empty rows or columns. '''
@@ -77,10 +78,10 @@ for (fraction,Ms,Ms_test) in zip(fractions_unknown,all_Ms,all_Ms_test):
     # Run the algorithm <repeats> times and store all the performances
     for metric in metrics:
         all_performances[metric].append([])
-    for (repeat,M,M_test) in zip(range(0,repeats),Ms,Ms_test):
+    for (repeat,M_train,M_test) in zip(range(0,repeats),Ms,Ms_test):
         print "Repeat %s of fraction %s." % (repeat+1, fraction)
     
-        BNMF = nmf_icm(R,M,K,ARD,hyperparams)
+        BNMF = nmf_icm(R,M_train,K,ARD,hyperparams)
         BNMF.initialise(init_UV)
         BNMF.run(iterations)
     

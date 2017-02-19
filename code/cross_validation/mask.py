@@ -21,7 +21,7 @@ def compute_Ms(folds_M):
 def nonzero_indices(M):
     ''' Return a list of indices of all nonzero indices in M. '''
     (I,J) = numpy.array(M).shape
-    return [(i,j) for i,j in itertools.product(range(0,I),range(0,J)) if M[i][j]]
+    return [(i,j) for i,j in itertools.product(range(I),range(J)) if M[i,j]]
 
 
 def check_empty_rows_columns(M):
@@ -38,9 +38,10 @@ def check_empty_rows_columns(M):
             return False
     return True
     
-def calc_inverse_M (M):
-    ''' Return the inverse of M. '''
-    return numpy.ones(M.shape) - M
+def calc_inverse_M(M, M_combined=None):
+    ''' Return the inverse of M. If M_combined is defined, make sure the 
+        original plus inverse add up to be M_combined.'''
+    return (M_combined if M_combined is not None else numpy.ones(M.shape)) - M
     
 
 ''' Generating methods. '''
@@ -72,7 +73,7 @@ def try_generate_M(I,J,fraction,attempts,M=None):
     ''' Try generate_M() :attempts times, making sure each row and column has 
         at least one observed entry. '''
     for i in range(attempts):
-        M_train,M_test = generate_M(M,fraction)
+        M_train,M_test = generate_M(I=I,J=J,fraction=fraction,M=M)
         if check_empty_rows_columns(M_train):
             return M_train,M_test
     assert False, "Failed to generate folds for training and test data, %s attempts, fraction %s." % (attempts,fraction)
@@ -85,7 +86,7 @@ def compute_folds(I,J,no_folds,M=None):
     if M is None:
         M = numpy.ones((I,J))
         
-    no_elements = sum([len([v for v in row if v]) for row in M])
+    no_elements = M.sum()
     indices = nonzero_indices(M)
     
     random.shuffle(indices)
@@ -94,10 +95,10 @@ def compute_folds(I,J,no_folds,M=None):
     
     Ms_train, Ms_test = [], [] # list of the M's for the different folds
     for indices in split_indices:
-        M_train = numpy.zeros((I,J))
+        M_test = numpy.zeros(M.shape)
         for i,j in indices:
-            M_train[i][j] = 1
-        M_test = M - M_train
+            M_test[i,j] = 1
+        M_train = M - M_test
         Ms_train.append(M_train)
         Ms_test.append(M_test)
         

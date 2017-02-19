@@ -46,7 +46,7 @@ R = numpy.loadtxt(input_folder+"R.txt")
 ''' Generate matrices M - one list of M's for each fraction. '''
 M_attempts = 100
 all_Ms = [ 
-    [try_generate_M(I,J,fraction,M_attempts) for r in range(0,repeats)]
+    [try_generate_M(I,J,fraction,M_attempts)[0] for r in range(0,repeats)]
     for fraction in fractions_unknown
 ]
 all_Ms_test = [ [calc_inverse_M(M) for M in Ms] for Ms in all_Ms ]

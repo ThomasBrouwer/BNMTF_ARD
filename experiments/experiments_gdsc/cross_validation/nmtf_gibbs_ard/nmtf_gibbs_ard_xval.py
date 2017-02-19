@@ -1,5 +1,5 @@
 """
-Run the nested cross-validation for the Gibbs NMF class with ARD, on the GDSC dataset.
+Run the nested cross-validation for the Gibbs NMTF class with ARD, on the GDSC dataset.
 """
 
 project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
