@@ -12,7 +12,7 @@ iterations = range(1,300+1)
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"mse_nmtf_convergences.png"
+plot_file = folder_plots+"mse_nmtf_convergences_gdsc.png"
 
 
 ''' Load in the performances. '''

@@ -12,7 +12,7 @@ time_max = 8
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"mse_nmtf_times.png"
+plot_file = folder_plots+"mse_nmtf_times_gdsc.png"
 
 
 ''' Load in the performances. '''

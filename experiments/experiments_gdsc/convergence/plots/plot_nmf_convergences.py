@@ -12,7 +12,7 @@ iterations = range(1,100+1)
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"mse_nmf_convergences.png"
+plot_file = folder_plots+"mse_nmf_convergences_gdsc.png"
 legend_file = folder_plots+"legend.png"
 
 
@@ -55,14 +55,4 @@ for metric in metrics:
         plt.ylim(0,1)
         
     plt.savefig(plot_file, dpi=600)
-      
-    # Set up the legend outside
-    font_size_legend, number_of_columns, legend_box_line_width, legend_line_width = 12, 4, 1, 2
-    ax = fig.add_subplot(111)
-    legend_fig = plt.figure(figsize=(6.5,0.4))
-    legend = legend_fig.legend(*ax.get_legend_handles_labels(), loc='center', prop={'size':font_size_legend}, ncol=number_of_columns)
-    legend.get_frame().set_linewidth(legend_box_line_width)
-    plt.setp(legend.get_lines(),linewidth=legend_line_width)
-        
-    plt.savefig(legend_file, dpi=600)
     

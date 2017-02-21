@@ -19,6 +19,7 @@ MSE_max = 40
 folder_plots = "./"
 folder_results = "./../results/"
 plot_file = folder_plots+"mse_nmf_ard_noise.png"
+legend_file = folder_plots+"legend.png"
 
 
 ''' Load in the performances. '''
@@ -48,7 +49,6 @@ colours = ['r','m','b','y','g','k','c']
 ''' Plot the performances for the metrics specified. '''
 for metric in metrics:
     fig = plt.figure(figsize=(3,1.5))
-    fig.add_subplot(111)
     fig.subplots_adjust(left=0.10, right=0.99, bottom=0.17, top=0.95)
     plt.xlabel("Noise to signal ratio", fontsize=8, labelpad=1)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
