@@ -102,6 +102,6 @@ class MatrixSingleCrossValidation:
     
     def log_average_performance(self):
         avr_performance = {metric: numpy.mean(self.performances[metric]) for metric in METRICS}
-        message = "Average performance: %s." % (avr_performance)
+        message = "Average performance: %s. All performances: %s." % (avr_performance, self.performances)
         self.fout.write(message)
         self.fout.flush()
