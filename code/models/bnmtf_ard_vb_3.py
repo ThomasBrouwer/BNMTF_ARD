@@ -57,10 +57,11 @@ sys.path.append("/home/tab43/Documents/Projects/libraries/")
 from BNMTF_ARD.code.distributions.exponential import exponential_draw
 from bnmtf_ard_vb_1 import bnmtf_ard_vb_1
 
-import numpy, itertools, math, scipy, time
+import numpy, itertools, math, scipy, random
    
 PERFORMANCE_METRICS = ['MSE','R^2','Rp']
 QUALITY_MEASURES = ['loglikelihood','BIC','AIC','MSE','ELBO']
+RANDOMISE_UPDATES = True
 
 class bnmtf_ard_vb_3(bnmtf_ard_vb_1):
     def __init__(self,R,M,K,L,priors):
@@ -88,8 +89,11 @@ class bnmtf_ard_vb_3(bnmtf_ard_vb_1):
         
     """ Methods for updating all of F, S, G, tau. """
     def run_S(self):
-        ''' Update lambdaS and S. '''
-        for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
+        ''' Update S. '''
+        indices = itertools.product(xrange(0,self.K),xrange(0,self.L))     
+        if RANDOMISE_UPDATES: random.shuffle(indices)   
+        
+        for k,l in indices:
             self.update_S(k,l)
             self.update_exp_S(k,l)   
         

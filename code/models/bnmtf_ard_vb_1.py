@@ -60,10 +60,11 @@ from BNMTF_ARD.code.distributions.truncated_normal import TN_expectation, TN_var
 from BNMTF_ARD.code.distributions.truncated_normal_vector import TN_vector_expectation, TN_vector_variance
 from BNMTF_ARD.code.distributions.exponential import exponential_draw
 
-import numpy, itertools, math, scipy, time
+import numpy, itertools, math, scipy, time, random
    
 PERFORMANCE_METRICS = ['MSE','R^2','Rp']
 QUALITY_MEASURES = ['loglikelihood','BIC','AIC','MSE','ELBO']
+RANDOMISE_UPDATES = True
 
 class bnmtf_ard_vb_1(object):
     def __init__(self,R,M,K,L,priors):
@@ -215,6 +216,9 @@ class bnmtf_ard_vb_1(object):
     """ Methods for updating all of F, S, G, tau. """
     def run_F(self):
         ''' Update lambdaF and F. '''
+        indices = range(0,self.K)
+        if RANDOMISE_UPDATES: random.shuffle(indices)
+            
         for k in range(0,self.K):
             self.update_lambdaF(k)
             self.update_exp_lambdaF(k)
@@ -223,7 +227,10 @@ class bnmtf_ard_vb_1(object):
         
     def run_S(self):
         ''' Update lambdaS and S. '''
-        for k,l in itertools.product(xrange(0,self.K),xrange(0,self.L)):
+        indices = itertools.product(xrange(0,self.K),xrange(0,self.L))     
+        if RANDOMISE_UPDATES: random.shuffle(indices)   
+        
+        for k,l in indices:
             self.update_lambdaS(k,l)
             self.update_exp_lambdaS(k,l)
             self.update_S(k,l)
@@ -231,7 +238,10 @@ class bnmtf_ard_vb_1(object):
         
     def run_G(self):
         ''' Update lambdaG and G. '''
-        for l in range(0,self.L):
+        indices = range(0,self.L)
+        if RANDOMISE_UPDATES: random.shuffle(indices)
+            
+        for l in indices:
             self.update_lambdaG(l)
             self.update_exp_lambdaG(l)
             self.update_G(l)
