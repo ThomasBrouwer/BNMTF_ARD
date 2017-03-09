@@ -2,7 +2,7 @@
 Run the nested cross-validation for the Gibbs NMTF class with ARD, on the CCLE IC50 dataset.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -21,7 +21,7 @@ alpha0, beta0 = 1., 1.
 hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaF':lambdaF, 'lambdaS':lambdaS, 'lambdaG':lambdaG }
 
 train_config = {
-    'iterations' : 200,
+    'iterations' : 500,
     'init_FG' : 'kmeans',
     'init_S' : 'random',
 }

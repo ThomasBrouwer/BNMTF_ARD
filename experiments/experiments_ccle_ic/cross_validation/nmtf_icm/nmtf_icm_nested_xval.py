@@ -2,7 +2,7 @@
 Run the nested cross-validation for the ICM NMTF class, on the CCLE IC50 dataset.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -32,7 +32,7 @@ predict_config = {
 
 
 ''' Settings nested cross-validation. '''
-KL_range = [4,5,6,7]
+KL_range = [1,2,3,4,5]
 #K_range = [5,6,7,8]
 #L_range = [5,6,7,8]
 no_folds = 10

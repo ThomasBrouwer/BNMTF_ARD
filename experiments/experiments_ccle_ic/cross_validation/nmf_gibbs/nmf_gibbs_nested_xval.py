@@ -2,7 +2,7 @@
 Run the nested cross-validation for the Gibbs NMF class, on the CCLE IC50 dataset.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -30,7 +30,7 @@ predict_config = {
 
 
 ''' Settings nested cross-validation. '''
-K_range = [8,9,10,11,12]
+K_range = [1,2,3,4,5,6,7,8]
 no_folds = 10
 no_threads = 5
 parallel = False

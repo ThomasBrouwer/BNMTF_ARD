@@ -2,7 +2,7 @@
 Run the nested cross-validation for the NP NMF class, on the CTRP dataset.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -13,7 +13,7 @@ from BNMTF_ARD.data.drug_sensitivity.load_data import load_ctrp_ec50
 
 ''' Settings NMF. '''
 train_config = {
-    'iterations' : 1000,
+    'iterations' : 500,
     'init_UV' : 'exponential',
     'expo_prior' : 0.1
 }
@@ -21,7 +21,7 @@ predict_config = {}
 
 
 ''' Settings nested cross-validation. '''
-K_range = [1,2,3,4,5,6,7,8]
+K_range = [4,5,6,7,8]
 no_folds = 10
 no_threads = 5
 parallel = False
