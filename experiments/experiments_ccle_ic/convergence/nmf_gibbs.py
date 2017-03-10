@@ -25,7 +25,7 @@ output_file_times = output_folder+'nmf_gibbs_all_times.txt'
 
 
 ''' Model settings. '''
-iterations = 200
+iterations = 500
 
 init_UV = 'random'
 K = 20
