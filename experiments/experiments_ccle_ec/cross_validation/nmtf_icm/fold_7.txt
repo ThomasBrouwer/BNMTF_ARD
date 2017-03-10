@@ -1,0 +1,2 @@
+Tried parameters {'hyperparameters': {'alpha0': 1.0, 'lambdaF': 0.1, 'lambdaG': 0.1, 'beta0': 1.0, 'betatau': 1.0, 'alphatau': 1.0, 'lambdaS': 0.1}, 'K': 1, 'ARD': False, 'L': 1} but got exception: Failed to generate folds for training and test data, 1000 attempts.. 
+Tried parameters {'hyperparameters': {'alpha0': 1.0, 'lambdaF': 0.1, 'lambdaG': 0.1, 'beta0': 1.0, 'betatau': 1.0, 'alphatau': 1.0, 'lambdaS': 0.1}, 'K': 2, 'ARD': False, 'L': 2} but got exception: Failed to generate folds for training and test data, 1000 attempts.. 
