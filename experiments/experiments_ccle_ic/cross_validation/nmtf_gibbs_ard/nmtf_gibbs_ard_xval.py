@@ -21,12 +21,12 @@ alpha0, beta0 = 1., 1.
 hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaF':lambdaF, 'lambdaS':lambdaS, 'lambdaG':lambdaG }
 
 train_config = {
-    'iterations' : 200,
+    'iterations' : 500,
     'init_FG' : 'kmeans',
     'init_S' : 'random',
 }
 predict_config = {
-    'burn_in' : 180,
+    'burn_in' : 450,
     'thinning' : 2,
 }
 parameters = {'K':K, 'L':L, 'ARD':ARD, 'hyperparameters':hyperparams}

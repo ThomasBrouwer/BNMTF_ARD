@@ -2,7 +2,7 @@
 Run the nested cross-validation for the Gibbs NMF class, on the CCLE EC50 dataset.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -20,17 +20,17 @@ alpha0, beta0 = 1., 1.
 hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaU':lambdaU, 'lambdaV':lambdaV }
 
 train_config = {
-    'iterations' : 200,
+    'iterations' : 500,
     'init_UV' : 'random',
 }
 predict_config = {
-    'burn_in' : 180,
+    'burn_in' : 450,
     'thinning' : 2,
 }
 
 
 ''' Settings nested cross-validation. '''
-K_range = [8,9,10,11,12]
+K_range = [1,2]
 no_folds = 10
 no_threads = 5
 parallel = False

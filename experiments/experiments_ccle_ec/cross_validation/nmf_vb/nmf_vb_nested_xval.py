@@ -2,7 +2,7 @@
 Run the nested cross-validation for the VB NMF class, on the CCLE EC50 dataset.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -20,14 +20,14 @@ alpha0, beta0 = 1., 1.
 hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaU':lambdaU, 'lambdaV':lambdaV }
 
 train_config = {
-    'iterations' : 200,
+    'iterations' : 500,
     'init_UV' : 'random',
 }
 predict_config = {}
 
 
 ''' Settings nested cross-validation. '''
-K_range = [4,5,6,7,8,9]
+K_range = [1,2]
 no_folds = 10
 no_threads = 5
 parallel = False
