@@ -31,7 +31,7 @@ for metric in metrics:
     
     x, y1, y2 = values_K, numpy.mean(gibbs_ard_performances[metric],axis=1), numpy.mean(gibbs_performances[metric],axis=1)
     plt.plot(x,y1,linestyle='-', marker='o', c=colour, markersize=3)
-    plt.plot(x,y2,linestyle='-', marker='x', c=colour, markersize=3)
+    plt.plot(x,y2,linestyle='--', marker='x', c=colour, markersize=3)
     
     plt.xticks(fontsize=6)
     if metric == 'MSE':

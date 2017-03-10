@@ -25,7 +25,7 @@ output_file_times = output_folder+'nmtf_np_all_times.txt'
 
 
 ''' Model settings. '''
-iterations = 1000
+iterations = 500
 
 init_FG = 'kmeans'
 init_S = 'random'

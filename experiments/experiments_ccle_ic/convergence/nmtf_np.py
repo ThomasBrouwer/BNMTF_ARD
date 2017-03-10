@@ -55,7 +55,14 @@ for i in range(0,repeats):
 
 
 ''' Check whether seed worked: all performances should be the same. '''
-assert all([numpy.array_equal(p, performances_repeats[0]) for p in performances_repeats]), \
+METRICS = ['MSE', 'R^2', 'Rp']
+def excluse_nan(performances):
+    return {
+        metric: [v for v in performances[metric] if not numpy.isnan(v)]
+        for metric in METRICS
+    }
+assert all([numpy.array_equal(excluse_nan(excluse_nan(p)), excluse_nan(performances_repeats[0])) 
+            for p in performances_repeats]), \
     "Seed went wrong - performances not the same across repeats!"
 
 

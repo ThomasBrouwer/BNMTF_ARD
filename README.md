@@ -48,7 +48,7 @@ Contains the drug sensitivity datasets (GDSC IC50, CCLE IC50, CCLE EC50, CTRP EC
 - **/experiments_gdsc/** - Experiments on the Sanger GDSC IC50 dataset, as well as helper methods for loading in the data.
   - **/convergence/** - Measure convergence rate of the methods (against iterations and time) on the GDSC data.
   - **/grid_search/** - Measure the effectiveness of the line, grid, and greedy search model selection methods on the Sanger data.
-  - **/cross_validation/** - 10-fold cross-validation experiments on the Sanger data.
+  - **/cross_validation/** - 10-fold cross-validation experiments on the Sanger data. Also contains plots of performances.
   - **/sparsity/** - Measure the predictive performance on missing values for varying sparsity levels.
 - **/experiments_ctrp/**, **/experiments_ctrp/**, **/experiments_ctrp/** - Similar to /experiments_gdsc/, but on the CTRP EC50, CCLE IC50, and CCLE EC50 datasets.
 
