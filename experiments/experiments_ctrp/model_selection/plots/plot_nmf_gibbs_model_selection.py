@@ -9,7 +9,7 @@ import numpy
 ''' Plot settings. '''
 metrics = ['MSE']#['MSE','R^2','Rp']
 MSE_min, MSE_max = 650, 850
-values_K = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
+values_K = [1,2,3,4,6,8,10,15,20]
 
 folder_plots = "./"
 folder_results = "./../results/"
