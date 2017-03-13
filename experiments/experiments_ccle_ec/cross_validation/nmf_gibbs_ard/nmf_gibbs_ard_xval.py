@@ -2,7 +2,7 @@
 Run the nested cross-validation for the Gibbs NMF class with ARD, on the CCLE EC50 dataset.
 """
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/" # "/home/tab43/Documents/Projects/libraries/" # 
 import sys
 sys.path.append(project_location)
 

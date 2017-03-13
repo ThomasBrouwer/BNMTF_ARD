@@ -49,7 +49,7 @@ colours = ['r','b','g','c']
 ''' Plot the performances for the metrics specified. '''
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
-    fig.subplots_adjust(left=0.14, right=0.95, bottom=0.17, top=0.95)
+    fig.subplots_adjust(left=0.21, right=0.95, bottom=0.17, top=0.95)
     plt.xlabel("Time (s)", fontsize=8, labelpad=0)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
     plt.yticks(range(0,MSE_max+1),fontsize=6)

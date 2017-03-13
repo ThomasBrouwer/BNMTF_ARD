@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 
 ''' Plot settings. '''
 metrics = ['MSE']#,'R^2','Rp']
-MSE_min, MSE_max = 400, 1000
-time_max = 6
+MSE_min, MSE_max = 600, 750
+time_max = 50
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"mse_nmf_times_gdsc.png"
+plot_file = folder_plots+"mse_nmf_times_ctrp.png"
 
 
 ''' Load in the performances. '''
@@ -49,7 +49,7 @@ colours = ['r','b','g','c']
 ''' Plot the performances for the metrics specified. '''
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
-    fig.subplots_adjust(left=0.14, right=0.95, bottom=0.17, top=0.95)
+    fig.subplots_adjust(left=0.17, right=0.95, bottom=0.17, top=0.95)
     plt.xlabel("Time (s)", fontsize=8, labelpad=0)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
     plt.yticks(range(0,MSE_max+1),fontsize=6)
@@ -61,7 +61,7 @@ for metric in metrics:
         
     plt.xlim(0,time_max)
     if metric == 'MSE':
-        plt.yticks(range(0,MSE_max+1,100))
+        plt.yticks(range(0,MSE_max+1,50))
         plt.ylim(MSE_min,MSE_max)
     elif metric == 'R^2' or metric == 'Rp':
         plt.ylim(0,1)

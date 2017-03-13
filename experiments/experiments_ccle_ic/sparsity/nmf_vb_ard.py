@@ -4,7 +4,7 @@ the fraction of entries that are missing.
 We repeat this 10 times per fraction and average that.
 '''
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 repeats = 10
 fractions_unknown = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] # [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9]
 
-output_folder = project_location+"BNMTF_ARD/experiments/experiments_ccle_ic/sparsity/results/"
+output_folder = './results/'
 output_file = output_folder+'nmf_vb_ard.txt'
 
 metrics = ['MSE', 'R^2', 'Rp']
@@ -30,7 +30,7 @@ metrics = ['MSE', 'R^2', 'Rp']
 iterations = 200
 
 init_UV = 'random'
-K = 7
+K = 5
 ARD = True
 
 lambdaU, lambdaV = 0.1, 0.1

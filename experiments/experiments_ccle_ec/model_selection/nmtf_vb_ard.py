@@ -3,7 +3,7 @@ Test the performance of VB with ARD for recovering the CCLE EC dataset, where we
 vary the number of factors. Run cross-validation for each value of K and L.
 '''
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 
 ''' Experiment settings. '''
 no_folds = 10
-values_KL = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
+values_KL = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20]
 
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_ccle_ec/model_selection/results/"
 output_file = output_folder+'nmtf_vb_ard.txt'
