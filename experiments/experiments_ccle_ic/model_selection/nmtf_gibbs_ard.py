@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 
 ''' Experiment settings. '''
 no_folds = 10
-values_KL = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
+values_KL = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20]
 
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_ccle_ic/model_selection/results/"
 output_file = output_folder+'nmtf_gibbs_ard.txt'
@@ -25,8 +25,8 @@ metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 200
-burn_in = 180
+iterations = 500
+burn_in = 450
 thinning = 2
 
 init_FG, init_S = 'kmeans', 'random'

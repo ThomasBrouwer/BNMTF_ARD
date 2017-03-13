@@ -9,7 +9,7 @@ import numpy
 ''' Plot settings. '''
 metrics = ['MSE']#['MSE','R^2','Rp']
 MSE_min, MSE_max = 600, 1500
-fractions_unknown = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+fractions_unknown = [0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75]
 
 folder_plots = "./"
 folder_results = "./../results/"
