@@ -25,7 +25,7 @@ gibbs_ard_performances = eval(open(folder_results+'nmf_vb_ard.txt','r').read())
 
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
-    fig.subplots_adjust(left=0.17, right=0.96, bottom=0.18, top=0.97)
+    fig.subplots_adjust(left=0.19, right=0.96, bottom=0.18, top=0.97)
     plt.xlabel("K", fontsize=8, labelpad=1)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
     

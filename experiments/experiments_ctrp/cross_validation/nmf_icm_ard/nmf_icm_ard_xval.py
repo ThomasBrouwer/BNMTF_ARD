@@ -2,7 +2,7 @@
 Run the nested cross-validation for the ICM NMF class with ARD, on the CTRP dataset.
 """
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -21,11 +21,11 @@ alpha0, beta0 = 1., 1.
 hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaU':lambdaU, 'lambdaV':lambdaV }
 
 train_config = {
-    'iterations' : 200,
+    'iterations' : 500,
     'init_UV' : 'random',
 }
 predict_config = {
-    'burn_in' : 180,
+    'burn_in' : 450,
     'thinning' : 2,
 }
 parameters = {'K':K, 'ARD':ARD, 'hyperparameters':hyperparams}

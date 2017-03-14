@@ -8,8 +8,8 @@ import numpy
 
 ''' Plot settings. '''
 metrics = ['MSE']#['MSE','R^2','Rp']
-MSE_min, MSE_max = 650, 850
-values_K = [1,2,3,4,6,8,10,15,20]
+MSE_min, MSE_max = 700, 1000
+values_K = [1,2,3,4,6,8,10,15,20,30,40]
 
 folder_plots = "./"
 folder_results = "./../results/"
@@ -25,7 +25,7 @@ gibbs_ard_performances = eval(open(folder_results+'nmf_gibbs_ard.txt','r').read(
 
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
-    fig.subplots_adjust(left=0.17, right=0.96, bottom=0.18, top=0.97)
+    fig.subplots_adjust(left=0.19, right=0.96, bottom=0.18, top=0.97)
     plt.xlabel("K", fontsize=8, labelpad=1)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
     
