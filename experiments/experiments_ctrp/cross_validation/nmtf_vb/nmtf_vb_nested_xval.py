@@ -29,7 +29,7 @@ predict_config = {}
 
 
 ''' Settings nested cross-validation. '''
-KL_range = [5,6,7,8]
+KL_range = [8,9]
 #K_range = [5,6,7,8]
 #L_range = [5,6,7,8]
 no_folds = 10

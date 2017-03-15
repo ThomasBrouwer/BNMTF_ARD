@@ -63,6 +63,7 @@ ALL_QUALITY = ['loglikelihood','BIC','AIC','MSE','ELBO']
 OPTIONS_INIT_FG = ['kmeans', 'random', 'exp']
 OPTIONS_INIT_S = ['random', 'exp']
 MINIMUM_TN = 0.1 # ICM has the tendency to set most columns to 0's; we reset them to this value.
+ELEMENT_WISE_SPARSITY = True # If True, use element wise sparsity (ARD) for Skl
 
 class nmtf_icm:
     def __init__(self,R,M,K,L,ARD,hyperparameters):

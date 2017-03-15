@@ -57,6 +57,7 @@ ALL_METRICS = ['MSE','R^2','Rp']
 ALL_QUALITY = ['loglikelihood','BIC','AIC','MSE','ELBO']
 OPTIONS_INIT_FG = ['kmeans', 'random', 'exp']
 OPTIONS_INIT_S = ['random', 'exp']
+ELEMENT_WISE_SPARSITY = True # If True, use element wise sparsity (ARD) for Skl
 
 class bnmtf_vb:
     def __init__(self,R,M,K,L,ARD,hyperparameters):

@@ -2,7 +2,7 @@
 Recover the GDSC IC50 dataset using Gibbs. We use K=20.
 
 Measure the convergence over iterations and time.
-We run the algorithm 100 times and average the training error and time stamps.
+We run the algorithm 20 times and average the training error and time stamps.
 We only store the MSE.
 """
 
@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 
 ''' Location of toy data, and where to store the performances. '''
-output_folder = project_location+"BNMTF_ARD/experiments/experiments_gdsc/convergence/results/"
+output_folder = project_location+"BNMTF_ARD/experiments/experiments_gdsc/convergence_average/results/"
 output_file_performances = output_folder+'nmf_gibbs_all_performances.txt'
 output_file_times = output_folder+'nmf_gibbs_all_times.txt'
 
@@ -31,7 +31,7 @@ iterations = 200
 init_UV = 'random'
 K = 20
 ARD = False
-repeats = 50
+repeats = 20
 
 lambdaU = 0.1
 lambdaV = 0.1
