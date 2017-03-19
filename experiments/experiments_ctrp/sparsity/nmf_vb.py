@@ -30,7 +30,7 @@ metrics = ['MSE', 'R^2', 'Rp']
 iterations = 200
 
 init_UV = 'random'
-K = 7
+K = 6
 ARD = False
 
 lambdaU, lambdaV = 0.1, 0.1

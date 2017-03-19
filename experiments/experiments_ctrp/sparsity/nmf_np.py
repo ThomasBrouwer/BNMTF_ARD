@@ -30,7 +30,7 @@ metrics = ['MSE', 'R^2', 'Rp']
 iterations = 1000
 
 init_UV = 'random'
-K = 6
+K = 3
 
 
 ''' Load in data. '''

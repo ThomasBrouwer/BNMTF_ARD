@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 
 ''' Plot settings. '''
-MSE_max = 10
-iterations = range(1,2000+1)
+MSE_max = 7
+iterations = range(1,1000+1)
 
 folder_plots = "./"
 folder_results = "./../results/"
@@ -33,9 +33,9 @@ colours = ['r','b','g','c']
 
 ''' Plot the performances. '''
 fig = plt.figure(figsize=(1.9,1.5))
-fig.subplots_adjust(left=0.15, right=0.95, bottom=0.17, top=0.95)
+fig.subplots_adjust(left=0.13, right=0.95, bottom=0.17, top=0.95)
 plt.xlabel("Iterations", fontsize=8, labelpad=0)
-plt.ylabel("MSE", fontsize=8, labelpad=-1)
+plt.ylabel("MSE", fontsize=8, labelpad=1)
 plt.yticks(range(0,MSE_max+1),fontsize=6)
 plt.xticks(fontsize=6)
 plt.ylim(0,MSE_max)

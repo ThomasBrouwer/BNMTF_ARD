@@ -27,12 +27,12 @@ metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 200
-burn_in = 180
+iterations = 500
+burn_in = 450
 thinning = 2
 
 init_UV = 'random'
-K = 8
+K = 7
 ARD = False
 
 lambdaU, lambdaV = 0.1, 0.1

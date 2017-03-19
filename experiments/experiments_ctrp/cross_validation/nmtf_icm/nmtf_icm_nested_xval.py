@@ -21,18 +21,18 @@ alpha0, beta0 = 1., 1.
 hyperparams = { 'alphatau':alphatau, 'betatau':betatau, 'alpha0':alpha0, 'beta0':beta0, 'lambdaF':lambdaF, 'lambdaS':lambdaS, 'lambdaG':lambdaG }
 
 train_config = {
-    'iterations' : 500,
+    'iterations' : 300, #500,
     'init_FG' : 'kmeans',
     'init_S' : 'random',
 }
 predict_config = {
-    'burn_in' : 450,
+    'burn_in' : 280, #450,
     'thinning' : 2,
 }
 
 
 ''' Settings nested cross-validation. '''
-KL_range = [4,5,6,7]
+KL_range = [5,6,7]
 #K_range = [5,6,7,8]
 #L_range = [5,6,7,8]
 no_folds = 10

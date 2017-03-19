@@ -15,7 +15,7 @@ import itertools
 
 ''' Settings NMTF. '''
 train_config = {
-    'iterations' : 1000,
+    'iterations' : 300, #1000,
     'init_FG' : 'kmeans',
     'init_S' : 'exponential',
     'expo_prior' : 0.1
@@ -24,9 +24,9 @@ predict_config = {}
 
 
 ''' Settings nested cross-validation. '''
-KL_range = [4,5,6,7]
-K_range = [5,6,7,8]
-L_range = [5,6,7,8]
+KL_range = [3,4]
+#K_range = [5,6,7,8]
+#L_range = [5,6,7,8]
 no_folds = 10
 no_threads = 5
 parallel = False

@@ -32,7 +32,7 @@ burn_in = 450
 thinning = 2
 
 init_UV = 'random'
-K = 5
+K = 4
 ARD = True
 
 lambdaU, lambdaV = 0.1, 0.1
