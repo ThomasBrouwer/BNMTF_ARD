@@ -32,7 +32,7 @@ all_performances = [
 colours = ['r','b','g','c']
 
 
-''' Plot the performances for the metrics specified. '''
+''' Plot the performances. '''
 fig = plt.figure(figsize=(1.9,1.5))
 fig.subplots_adjust(left=0.17, right=0.95, bottom=0.17, top=0.95)
 plt.xlabel("Iterations", fontsize=8, labelpad=0)

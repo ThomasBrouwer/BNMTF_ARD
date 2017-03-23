@@ -1,5 +1,5 @@
 """
-Recover the CTRP EC50 dataset using VB. We use K=10.
+Recover the CTRP EC50 dataset using VB. We use K=20.
 
 Measure the convergence over iterations and time.
 We run the algorithm 20 times and average the training error and time stamps.

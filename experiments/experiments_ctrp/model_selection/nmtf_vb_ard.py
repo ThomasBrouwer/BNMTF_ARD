@@ -3,7 +3,7 @@ Test the performance of VB with ARD for recovering the CTRP dataset, where we
 vary the number of factors. Run cross-validation for each value of K and L.
 '''
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
