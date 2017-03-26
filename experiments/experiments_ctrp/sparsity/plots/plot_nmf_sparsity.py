@@ -8,8 +8,8 @@ import numpy
 
 ''' Plot settings. '''
 metrics = ['MSE']#['MSE','R^2','Rp']
-MSE_min, MSE_max = 600, 1500
-fractions_unknown = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+MSE_min, MSE_max = 600, 1200
+fractions_unknown = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 folder_plots = "./"
 folder_results = "./../results/"
@@ -17,10 +17,16 @@ plot_file = folder_plots+"mse_nmf_sparsity.png"
 
 
 ''' Load in the performances. '''
+def eval_handle_nan(fin):
+    string = open(fin,'r').readline()
+    old, new = "nan", "10000" #"numpy.nan"
+    string = string.replace(old, new)
+    return eval(string)
+    
 vb_performances = eval(open(folder_results+'nmf_vb.txt','r').read())
 gibbs_performances = eval(open(folder_results+'nmf_gibbs.txt','r').read())
-icm_performances = eval(open(folder_results+'nmf_icm.txt','r').read())
-np_performances = eval(open(folder_results+'nmf_np.txt','r').read())
+icm_performances = eval_handle_nan(folder_results+'nmf_icm.txt')
+np_performances = eval_handle_nan(folder_results+'nmf_np.txt')
 
 
 ''' Assemble the average performances and method names. '''
@@ -35,7 +41,7 @@ colours = ['r','b','g','c']
 
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
-    fig.subplots_adjust(left=0.19, right=0.95, bottom=0.18, top=0.97)
+    fig.subplots_adjust(left=0.20, right=0.95, bottom=0.18, top=0.97)
     #plt.title("Performances (%s) for different fractions of missing values" % metric)
     plt.xlabel("Fraction missing", fontsize=8, labelpad=1)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
@@ -49,7 +55,7 @@ for metric in metrics:
         x, y = fractions_unknown, numpy.mean(all_perf[metric],axis=1)
         plt.plot(x,y,linestyle='-', marker='o', label=method, c=colour, markersize=3)
     
-    plt.xlim(0.0,1.)
+    plt.xlim(0.2,1.)
     if metric == 'MSE':
         plt.ylim(MSE_min,MSE_max)
         plt.yticks(range(MSE_min,MSE_max+1,100))

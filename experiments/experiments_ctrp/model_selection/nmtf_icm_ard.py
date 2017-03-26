@@ -25,8 +25,8 @@ metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 500
-burn_in = 450
+iterations = 200
+burn_in = 180
 thinning = 2
 
 init_FG, init_S = 'kmeans', 'random'
