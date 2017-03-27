@@ -3,7 +3,7 @@ Test the performance of VB for recovering the GDSC dataset, where we vary the
 number of factors. Run cross-validation for each value of K and L.
 '''
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -25,7 +25,7 @@ metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 200
+iterations = 500
 
 init_FG, init_S = 'kmeans', 'random'
 ARD = False

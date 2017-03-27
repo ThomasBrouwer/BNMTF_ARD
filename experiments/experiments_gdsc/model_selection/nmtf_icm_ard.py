@@ -3,7 +3,7 @@ Test the performance of ICM for recovering the GDSC dataset, where we vary the
 number of factors. Run cross-validation for each value of K and L.
 '''
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
+project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
 import sys
 sys.path.append(project_location)
 
@@ -25,8 +25,8 @@ metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 500
-burn_in = 450
+iterations = 1000
+burn_in = 900
 thinning = 2
 
 init_FG, init_S = 'kmeans', 'random'
