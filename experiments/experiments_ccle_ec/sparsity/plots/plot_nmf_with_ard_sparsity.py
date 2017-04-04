@@ -20,7 +20,7 @@ plot_file = folder_plots+"mse_nmf_ard_sparsity.png"
 ''' Load in the performances. '''
 def eval_handle_nan(fin):
     string = open(fin,'r').readline()
-    old, new = "nan", "numpy.nan"
+    old, new = "nan", "100" #"numpy.nan"
     string = string.replace(old, new)
     return eval(string)
     

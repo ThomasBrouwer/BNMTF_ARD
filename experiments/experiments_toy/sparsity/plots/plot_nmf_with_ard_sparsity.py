@@ -20,7 +20,7 @@ legend_file = folder_plots+"legend_ard.png"
 ''' Load in the performances. '''
 def eval_handle_nan(fin):
     string = open(fin,'r').readline()
-    old, new = "nan", "numpy.nan"
+    old, new = "nan", "10000" #"numpy.nan"
     string = string.replace(old, new)
     return eval(string)
     

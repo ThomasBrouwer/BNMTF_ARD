@@ -13,14 +13,14 @@ values_K = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"nmtf_icm_model_selection_2.png"
+plot_file = folder_plots+"nmtf_icm_model_selection_NOMIN.png"
 
 colour = 'g' #['r','b','g','c'] -> VB, Gibbs, ICM, NP
 
 
 ''' Load in the performances. '''
-gibbs_performances = eval(open(folder_results+'nmtf_icm_2.txt','r').read())
-gibbs_ard_performances = eval(open(folder_results+'nmtf_icm_ard_2.txt','r').read())
+gibbs_performances = eval(open(folder_results+'nmtf_icm_NOMIN.txt','r').read())
+gibbs_ard_performances = eval(open(folder_results+'nmtf_icm_ard_NOMIN.txt','r').read())
 
 
 for metric in metrics:

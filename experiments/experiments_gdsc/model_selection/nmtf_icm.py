@@ -16,17 +16,17 @@ import matplotlib.pyplot as plt
 
 ''' Experiment settings. '''
 no_folds = 10
-values_KL = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
+values_KL = [1,2,3,4,6,8,10,15,20,30]#[1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
 
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_gdsc/model_selection/results/"
-output_file = output_folder+'nmtf_icm.txt'
+output_file = output_folder+'nmtf_icm_NOMIN.txt'
 
 metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 1000
-burn_in = 900
+iterations = 500
+burn_in = 400
 thinning = 2
 
 init_FG, init_S = 'kmeans', 'random'

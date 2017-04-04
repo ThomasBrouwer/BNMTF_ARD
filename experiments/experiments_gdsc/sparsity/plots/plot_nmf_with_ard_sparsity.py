@@ -61,7 +61,7 @@ for metric in metrics:
         x, y = fractions_unknown, numpy.mean(all_perf[metric],axis=1)
         plt.plot(x,y,linestyle='-', marker='o', label=method, c=colour, markersize=3)
     
-    plt.xlim(0.0,1.)
+    plt.xlim(0.1, 1.0)
     if metric == 'MSE':
         plt.ylim(MSE_min,MSE_max)
         plt.yticks(range(MSE_min,MSE_max+1,100))
