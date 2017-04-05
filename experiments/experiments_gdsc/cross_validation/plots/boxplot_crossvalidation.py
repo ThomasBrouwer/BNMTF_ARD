@@ -144,16 +144,17 @@ colours = ['r','m','b','y','g','k','c']
 
 
 ''' Plot settings. '''
-figsize = (8.0, 6.0)
+figsize = (8.0, 5.1)
 nrows, ncols = 4, 1
-left, right, bottom, top = 0.035, 0.95, 0.25, 0.98
-plot_file = "./boxplot_crossvalidation.png"
+left, right, bottom, top = 0.035, 0.95, 0.25, 0.99
+plot_file = "./boxplot_crossvalidation_rescaled.png"
 showoutliers = False
+fontsize = 10
 
 gdsc_MSE_min,    gdsc_MSE_max,    gdsc_step =    675, 790, 50
-ctrp_MSE_min,    ctrp_MSE_max,    ctrp_step =    725, 925, 100
-ccle_ic_MSE_min, ccle_ic_MSE_max, ccle_ic_step = 3, 5.2, 1
-ccle_ec_MSE_min, ccle_ec_MSE_max, ccle_ec_step = 6, 20, 5
+ctrp_MSE_min,    ctrp_MSE_max,    ctrp_step =    726, 810, 25 # 725, 925, 100 # 
+ccle_ic_MSE_min, ccle_ic_MSE_max, ccle_ic_step = 3.2, 5.2, 1
+ccle_ec_MSE_min, ccle_ec_MSE_max, ccle_ec_step = 6.1, 15, 2 # 6, 19.9, 5 # 
 
 
 ''' Make the plot. '''
@@ -174,11 +175,14 @@ for i, (dataset, MSE_min, MSE_max, MSE_step) in enumerate(zip(
     [gdsc_MSE_max, ctrp_MSE_max, ccle_ic_MSE_max, ccle_ec_MSE_max],
     [gdsc_step, ctrp_step, ccle_ic_step, ccle_ec_step])):
     
-    axes[i].set_ylabel(dataset)
+    axes[i].set_ylabel(dataset, fontsize=fontsize)
     axes[i].set_yticks(range(0, int(MSE_max)+1, MSE_step))
     axes[i].set_ylim(MSE_min, MSE_max)
     axes[i].yaxis.tick_right()
     axes[i].yaxis.set_ticks_position('none')
+    #axes[i].set_yscale('log')
+
+plt.text(14.57, 45.9, 'MSE', fontsize=12) # plt.text(14.575, 68, 'MSE', fontsize=12)
 
 # Turn off x-axis labels for top 3 plots, and xticks for bottom one
 for x in range(2+1):
@@ -186,7 +190,7 @@ for x in range(2+1):
 axes[3].xaxis.set_ticks_position('none')
 
 # Transform xlabels into method names
-plt.xticks(range(1,len(method_names)+1), rotation=90)
+plt.xticks(range(1,len(method_names)+1), rotation=90, fontsize=fontsize)
 
 # Make the lines from dashed into straight line
 for bp in [bp1, bp2, bp3, bp4]:

@@ -9,7 +9,7 @@ import numpy
 ''' Plot settings. '''
 metrics = ['MSE']#['MSE','R^2','Rp']
 MSE_min, MSE_max = 650, 850
-values_K = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
+values_K = [1,2,3,4,6,8,10,15,20,30]#[1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
 
 folder_plots = "./"
 folder_results = "./../results/"
@@ -19,10 +19,17 @@ colour = 'g' #['r','b','g','c'] -> VB, Gibbs, ICM, NP
 
 
 ''' Load in the performances. '''
+def eval_handle_nan(fin):
+    string = open(fin,'r').readline()
+    old, new = "nan", "numpy.nan"
+    string = string.replace(old, new)
+    return eval(string)
+    
 gibbs_performances = eval(open(folder_results+'nmtf_icm_NOMIN.txt','r').read())
-gibbs_ard_performances = eval(open(folder_results+'nmtf_icm_ard_NOMIN.txt','r').read())
+gibbs_ard_performances = eval_handle_nan(folder_results+'nmtf_icm_ard_NOMIN.txt')
 
 
+''' Plot the performances. '''
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
     fig.subplots_adjust(left=0.17, right=0.96, bottom=0.18, top=0.97)
@@ -32,6 +39,9 @@ for metric in metrics:
     x, y1, y2 = values_K, numpy.mean(gibbs_ard_performances[metric],axis=1), numpy.mean(gibbs_performances[metric],axis=1)
     plt.plot(x,y1,linestyle='-', marker='o', c=colour, markersize=3)
     plt.plot(x,y2,linestyle='--', marker='x', c=colour, markersize=3)
+    
+    print y1
+    print y2    
     
     plt.xticks(fontsize=6)
     if metric == 'MSE':
