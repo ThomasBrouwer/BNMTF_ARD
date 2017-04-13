@@ -1,9 +1,13 @@
-# Bayesian nonnegative matrix tri-factorisation: inference trade-offs
+# Comparative Study of Inference Methods for Bayesian Matrix Factorisation
 Submitted to ECML 2017.
 
 Authors: **Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**.
 
 This project contains an implementation of the Bayesian non-negative matrix factorisation and tri-factorisation models presented in the paper **Fast Bayesian nonnegative matrix factorisation and tri-factorisation**. We furthermore provide all datasets used (including the preprocessing scripts), and Python scripts for experiments.
+
+If you wish to reproduce the results from the paper, you can do this as follows.
+- Clone the repository to your local machine.
+- Modify the paths in 
 
 This project is structured as follows:
 
@@ -36,9 +40,10 @@ Contains the toy data, and methods for generating toy data.
 - **/bnmtf/** - Generate toy data using **generate_bnmtf.py**, giving files **F.txt**, **S.txt**, **G.txt**, **R.txt**, **R_true.txt** (no noise), **M.txt**.
 
 #### /data_drug_sensitivity/
-Contains the drug sensitivity datasets (GDSC IC50, CCLE IC50, CCLE EC50, CTRP EC50).
+Contains the drug sensitivity datasets (GDSC IC50, CCLE IC50, CCLE EC50, CTRP EC50). For more details see description.md.
 - **/gdsc/**, **/ctrp/**, **/ccle/** - The datasets. We obtained these from the "Bayesian Hybrid Matrix Factorisation for Data Integration" paper (Thomas Brouwer and Pietro Lio', 2017), using the complete datasets of each (before finding the overlap). More details in description.md.
 - **/plots/** - Plots of the distribution of values in the four datasets.
+- **load_data.py** - Contains methods for loading in the four drug sensitivity datasets.
 
 #### /experiments/
 - **/experiments_toy/** - Experiments on the toy data.
