@@ -1,7 +1,7 @@
 # Comparative Study of Inference Methods for Bayesian Matrix Factorisation
 Submitted to ECML 2017.
 
-Authors: **Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**.
+Authors: **Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**. Contact: tab43@cam.ac.uk.
 
 This project contains an implementation of the Bayesian non-negative matrix factorisation and tri-factorisation models presented in the paper **Fast Bayesian nonnegative matrix factorisation and tri-factorisation**. We furthermore provide all datasets used (including the preprocessing scripts), and Python scripts for experiments.
 
