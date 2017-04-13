@@ -37,7 +37,7 @@ The datasets are stored in **/GDSC/**, **/CTRP/**, and **/CCLE/**. Each folder c
   - **drugs.txt** - List of drugs (in order of ic50.txt) - normalised name, name.
   - **cell_lines.txt** - List of cell lines (in order of ic50.txt) - normalised name, name, COSMIC id, cancer type, tissue.
 
-/CTRP/
+#### /CTRP/
 - **/raw/** - Original Cancer Therapeutic Response Portal datasets. Contains 481 compounds (70 DFA approved, 100 clinical candidates, 311 small-molecule probes) and 860 cancer cell lines. Most of the following files not actually included due to Github size limit.
   - **CTRPv2.0._COLUMNS.xlsx** - Descriptions of the columns in CTRPv2.0_2015_ctd2_ExpandedDataset.
   - **CTRPv2.0._INFORMER_SET.xlsx** - Descriptions of the drugs in CTRPv2.0_2015_ctd2_ExpandedDataset (including SMILES codes).
@@ -53,7 +53,7 @@ The datasets are stored in **/GDSC/**, **/CTRP/**, and **/CCLE/**. Each folder c
   - **drugs.txt** - List of drugs (in order of ic50.txt) - normalised name, name, id, SMILES code.
   - **cell_lines.txt** - List of cell lines (in order of ic50.txt) - normalised name, name, id, cancer type, tissue.
 
-####/CCLE/
+#### /CCLE/
 - **/raw/** - Raw Cancer Cell Line Encyclopedia datasets. Contains 24 cancer drugs and 504 cell lines.
   - **CCLE_NP24.2009_Drug_data_2015.02.24.csv** - Drug sensitivity values as list of experiments - drug dose on a specific cell line, IC50, EC50.
   - **CCLE_NP24.2009_profiling_2012.02.20.csv** - Data about drugs - name, primary targets, manifacturer.
