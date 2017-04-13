@@ -5,10 +5,13 @@ Authors: **Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**. Contact: tab43@c
 
 This project contains an implementation of the Bayesian non-negative matrix factorisation and tri-factorisation models presented in the paper **Fast Bayesian nonnegative matrix factorisation and tri-factorisation**. We furthermore provide all datasets used (including the preprocessing scripts), and Python scripts for experiments.
 
+More details on the drug sensitivity datasets (where to download the raw data, and the preprocessing) can be found in **/data/drug_sensitivity/description.md**.
+
 If you wish to reproduce the results from the paper, you can do this as follows.
 - Clone the repository to your local machine.
 - Modify variable `folder_data` in **/data/drug_sensitivity/load_data.py** to point to the folder containing this repository.
 - Similarly, modify `project_location` to point to this location in any scripts in **/experiments/** that you wish to run.
+- Then simply run the script, and results will automatically be stored in the appropriate files.
 
 An outline of the folder structure is given below.
 
