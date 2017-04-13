@@ -7,9 +7,10 @@ This project contains an implementation of the Bayesian non-negative matrix fact
 
 If you wish to reproduce the results from the paper, you can do this as follows.
 - Clone the repository to your local machine.
-- Modify the paths in 
+- Modify variable `folder_data` in **/data/drug_sensitivity/load_data.py** to point to the folder containing this repository.
+- Similarly, modify `project_location` to point to this location in any scripts in **/experiments/** that you wish to run.
 
-This project is structured as follows:
+An outline of the folder structure is given below.
 
 ### /code/
 Python code, for the models, cross-validation methods, and model selection.
