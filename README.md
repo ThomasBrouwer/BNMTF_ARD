@@ -1,5 +1,5 @@
-# Comparative Study of Inference Methods for Bayesian Matrix Factorisation
-Submitted to ECML 2017.
+# Comparative Study of Inference Methods for Bayesian Nonnegative Matrix Factorisation
+To appear in: European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases (ECML PKDD 2017).
 
 Authors: **Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**. Contact: tab43@cam.ac.uk.
 
