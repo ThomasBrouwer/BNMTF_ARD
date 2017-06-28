@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 
 ''' Experiment settings. '''
 no_folds = 10
-values_KL = [1,2,3,4,6,8,10,15,20,30]#[1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
+values_KL = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
 
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_gdsc/model_selection/results/"
-output_file = output_folder+'nmtf_icm_ard_NOMIN.txt'
+output_file = output_folder+'nmtf_icm_ard.txt'
 
 metrics = ['MSE', 'R^2', 'Rp']
 

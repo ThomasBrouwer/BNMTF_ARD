@@ -19,7 +19,7 @@ no_folds = 10
 values_K = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
 
 output_folder = project_location+"BNMTF_ARD/experiments/experiments_gdsc/model_selection/results/"
-output_file = output_folder+'nmf_gibbs_ard.txt'
+output_file = output_folder+'nmf_gibbs_ard_REDO.txt'
 
 metrics = ['MSE', 'R^2', 'Rp']
 

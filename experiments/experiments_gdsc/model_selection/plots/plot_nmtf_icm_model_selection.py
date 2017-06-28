@@ -9,11 +9,11 @@ import numpy
 ''' Plot settings. '''
 metrics = ['MSE']#['MSE','R^2','Rp']
 MSE_min, MSE_max = 650, 850
-values_K = [1,2,3,4,6,8,10,15,20,30]#[1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
+values_K = [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,40]
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"nmtf_icm_model_selection_NOMIN.png"
+plot_file = folder_plots+"nmtf_icm_model_selection.png"
 
 colour = 'g' #['r','b','g','c'] -> VB, Gibbs, ICM, NP
 
@@ -25,8 +25,8 @@ def eval_handle_nan(fin):
     string = string.replace(old, new)
     return eval(string)
     
-gibbs_performances = eval(open(folder_results+'nmtf_icm_NOMIN.txt','r').read())
-gibbs_ard_performances = eval_handle_nan(folder_results+'nmtf_icm_ard_NOMIN.txt')
+gibbs_performances = eval(open(folder_results+'nmtf_icm.txt','r').read())
+gibbs_ard_performances = eval_handle_nan(folder_results+'nmtf_icm_ard.txt')
 
 
 ''' Plot the performances. '''

@@ -25,7 +25,7 @@ metrics = ['MSE', 'R^2', 'Rp']
 
 
 ''' Model settings. '''
-iterations = 200
+iterations = 400 #200
 
 init_UV = 'random'
 ARD = True
