@@ -47,24 +47,20 @@ colours = ['r','m','b','y','g','k','c']
 
 for metric in metrics:
     fig = plt.figure(figsize=(1.9,1.5))
-    fig.subplots_adjust(left=0.15, right=0.95, bottom=0.18, top=0.97)
+    fig.subplots_adjust(left=0.14, right=0.96, bottom=0.18, top=0.97)
     #plt.title("Performances (%s) for different fractions of missing values" % metric)
     plt.xlabel("Fraction missing", fontsize=8, labelpad=1)
     plt.ylabel(metric, fontsize=8, labelpad=-1)
-    if metric == 'MSE':
-        plt.yticks(range(0,MSE_max+1,2),fontsize=6)
-    else:
-        plt.yticks(fontsize=6)
-    plt.xticks(fontsize=6)
     
     for (method, all_perf, colour) in zip(methods,performances,colours):
         x, y = fractions_unknown, numpy.mean(all_perf[metric],axis=1)
         plt.plot(x,y,linestyle='-', marker='o', label=method, c=colour, markersize=3)
     
     plt.xlim(0.1,1.)
+    plt.xticks(numpy.arange(0.2, 1.1, 0.2), fontsize=6)
     if metric == 'MSE':
         plt.ylim(MSE_min,MSE_max)
-        plt.yticks(range(MSE_min,MSE_max+1,2))
+        plt.yticks(range(MSE_min,MSE_max+1,2), fontsize=6)
     else:
         plt.ylim(0.5,1.05)
      
