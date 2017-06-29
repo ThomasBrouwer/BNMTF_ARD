@@ -15,12 +15,11 @@ fractions_unknown = [0.2, 0.5, 0.8]
 
 folder_plots = "./"
 folder_results = "./../results/"
-plot_file = folder_plots+"nmf_gibbs_hyperparameter.png"
-legend_file = folder_plots+"legend.png"
+plot_file = folder_plots+"nmf_vb_hyperparameter.png"
 
 
 ''' Load in the performances. '''
-performances = eval(open(folder_results+'nmf_gibbs.txt','r').read())
+performances = eval(open(folder_results+'nmf_vb.txt','r').read())
 average_performances = {
     fraction: [
         numpy.mean(performances[fraction][lamb]) 
@@ -46,13 +45,3 @@ for fraction in fractions_unknown:
     y = average_performances[fraction]
     plt.plot(x, y, label='Fraction %s' % fraction)
 plt.savefig(plot_file, dpi=600)
-
-# Set up the legend outside
-font_size_legend, number_of_columns, legend_box_line_width, legend_line_width = 12, 3, 1, 2
-ax = fig.add_subplot(111)
-legend_fig = plt.figure(figsize=(5.3,0.35))
-legend = legend_fig.legend(*ax.get_legend_handles_labels(), loc='center', prop={'size':font_size_legend}, ncol=number_of_columns)
-legend.get_frame().set_linewidth(legend_box_line_width)
-plt.setp(legend.get_lines(),linewidth=legend_line_width)
-    
-plt.savefig(legend_file, dpi=600)
