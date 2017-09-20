@@ -1,9 +1,9 @@
 # Comparative Study of Inference Methods for Bayesian Nonnegative Matrix Factorisation
-To appear in: European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases (ECML PKDD 2017).
+European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases (ECML PKDD 2017).
 
 Authors: **Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**. Contact: tab43@cam.ac.uk.
 
-This project contains an implementation of the Bayesian non-negative matrix factorisation and tri-factorisation models presented in the paper **Fast Bayesian nonnegative matrix factorisation and tri-factorisation**. We furthermore provide all datasets used (including the preprocessing scripts), and Python scripts for experiments.
+This project contains an implementation of the Bayesian non-negative matrix factorisation and tri-factorisation models presented in the paper **Comparative Study of Inference Methods for Bayesian Nonnegative Matrix Factorisation**. We furthermore provide all datasets used (including the preprocessing scripts), and Python scripts for experiments.
 
 More details on the drug sensitivity datasets (where to download the raw data, and the preprocessing) can be found in **/data/drug_sensitivity/description.md**.
 
