@@ -4,8 +4,8 @@ the value of the hyperparameter lambda, and the fraction of unobserved entries.
 Run 10-fold cross-validation for each value of lambda and fraction.
 '''
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmf_gibbs import bnmf_gibbs

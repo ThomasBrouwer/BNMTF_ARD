@@ -15,14 +15,14 @@ We add Gaussian noise of precision tau = 1 (prior for gamma: alpha=1,beta=1).
 (Simply using the expectation of our Gamma distribution over tau)
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.distributions.exponential import exponential_draw
 from BNMTF_ARD.code.models.distributions.normal import normal_draw
 
-import numpy, itertools, matplotlib.pyplot as plt
+import numpy, itertools, matplotlib.pyplot as plt, os
 
 def generate_dataset(I,J,K,L,lambdaF,lambdaS,lambdaG,tau):
     # Generate U, V
@@ -55,7 +55,7 @@ def add_noise(true_R,tau):
 ##########
 
 if __name__ == "__main__":
-    output_folder = project_location+"BNMTF_ARD/data_toy/bnmtf/"
+    output_folder = os.path.dirname(__file__)+"/"
 
     I,J,K,L = 100, 80, 5, 5
     fraction_unknown = 0.1

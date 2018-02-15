@@ -4,8 +4,8 @@ fraction of entries that are missing.
 We repeat this 10 times per fraction and average that.
 '''
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmf_np import nmf_np

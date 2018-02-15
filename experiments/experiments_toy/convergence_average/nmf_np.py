@@ -6,8 +6,8 @@ We run the algorithm 20 times and average the training error and time stamps.
 We only store the MSE.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmf_np import nmf_np

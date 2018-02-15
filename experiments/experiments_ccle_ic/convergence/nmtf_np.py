@@ -5,8 +5,8 @@ Measure the convergence over iterations and time.
 We run the algorithm 10 times with the same seed, and take the average timestamps.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmtf_np import nmtf_np

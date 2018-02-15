@@ -2,8 +2,8 @@
 Run the nested cross-validation for the Gibbs NMTF class with ARD, on the GDSC dataset.
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmtf_vb import bnmtf_vb

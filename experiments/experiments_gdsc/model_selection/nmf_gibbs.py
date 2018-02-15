@@ -3,8 +3,8 @@ Test the performance of Gibbs sampling for recovering the GDSC dataset, where we
 vary the number of factors. Run cross-validation for each value of K.
 '''
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmf_gibbs import bnmf_gibbs

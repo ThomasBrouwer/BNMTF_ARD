@@ -2,8 +2,8 @@
 Run the nested cross-validation for the NP NMTF class, on the CCLE EC50 dataset.
 """
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.nmtf_np import nmtf_np

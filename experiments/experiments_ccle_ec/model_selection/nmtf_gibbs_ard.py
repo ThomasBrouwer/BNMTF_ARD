@@ -3,8 +3,8 @@ Test the performance of Gibbs sampling with ARD for recovering the CCLE EC datas
 where we vary the number of factors. Run cross-validation for each value of K and L.
 '''
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmtf_gibbs import bnmtf_gibbs

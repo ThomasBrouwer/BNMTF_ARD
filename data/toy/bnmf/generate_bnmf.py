@@ -14,14 +14,14 @@ We add Gaussian noise of precision tau = 1 (prior for gamma: alpha=1,beta=1).
 (Simply using the expectation of our Gamma distribution over tau)
 """
 
-project_location = "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.distributions.exponential import exponential_draw
 from BNMTF_ARD.code.models.distributions.normal import normal_draw
 
-import numpy, itertools, matplotlib.pyplot as plt
+import numpy, itertools, matplotlib.pyplot as plt, os
 
 def generate_dataset(I,J,K,lambdaU,lambdaV,tau):
     # Generate U, V
@@ -51,7 +51,7 @@ def add_noise(true_R,tau):
 ##########
 
 if __name__ == "__main__":
-    output_folder = project_location+"BNMTF_ARD/data/toy/bnmf/"
+    output_folder = os.path.dirname(__file__)+"/"
 
     I,J,K = 100, 80, 10 #20, 10, 5 #
     fraction_unknown = 0.1
@@ -62,11 +62,13 @@ if __name__ == "__main__":
     
     (U,V,tau,true_R,R) = generate_dataset(I,J,K,lambdaU,lambdaV,tau)
     
+    '''
     # Store all matrices in text files
     numpy.savetxt(open(output_folder+"U.txt",'w'),U)
     numpy.savetxt(open(output_folder+"V.txt",'w'),V)
     numpy.savetxt(open(output_folder+"R_true.txt",'w'),true_R)
     numpy.savetxt(open(output_folder+"R.txt",'w'),R)
+    '''
     
     print "Mean R: %s. Variance R: %s. Min R: %s. Max R: %s." % (numpy.mean(R),numpy.var(R),R.min(),R.max())
     fig = plt.figure()

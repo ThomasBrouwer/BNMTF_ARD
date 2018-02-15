@@ -2,8 +2,8 @@
 Run the nested cross-validation for the Gibbs NMF class with ARD, on the CCLE IC50 dataset.
 """
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmf_gibbs import bnmf_gibbs
@@ -32,7 +32,7 @@ parameters = {'K':K, 'ARD':ARD, 'hyperparameters':hyperparams}
 
 ''' Settings nested cross-validation. '''
 no_folds = 10
-output_file = "./results.txt"
+output_file = "./results_test.txt"
 
 
 ''' Load in the dataset. '''

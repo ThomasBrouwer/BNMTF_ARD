@@ -2,8 +2,8 @@
 Run the nested cross-validation for the VB NMF class, on the CCLE IC50 dataset.
 """
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.code.models.bnmf_vb import bnmf_vb
