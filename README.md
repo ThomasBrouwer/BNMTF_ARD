@@ -90,6 +90,7 @@ Contains the datasets, as well as methods for loading them in.
   - **/grid_search/** - Measure the effectiveness of the line, grid, and greedy search model selection methods on the Sanger data.
   - **/cross_validation/** - 10-fold cross-validation experiments on the Sanger data. Also contains plots of performances.
   - **/sparsity/** - Measure the predictive performance on missing values for varying sparsity levels.
+  - **/hyperparameters/** - Measure the impact of the hyperparameters (lambda) on predictive performance, for different sparsity levels.
 - **/experiments_ctrp/**, **/experiments_ctrp/**, **/experiments_ctrp/** - Similar to /experiments_gdsc/, but on the CTRP EC50, CCLE IC50, and CCLE EC50 datasets.
 
 ### /plots/
