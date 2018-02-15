@@ -20,9 +20,9 @@ If you wish to use the matrix factorisation models, or replicate the experiments
    import sys
    sys.path.append(project_location) 
    ```
-   For example, if the path to the project is /johndoe/projects/BNMTF_ARD/, use `project_location = /johndoe/projects/`. 
+   For example, if the path to the project is `/johndoe/projects/BNMTF_ARD/`, use `project_location = /johndoe/projects/`. 
    If you intend to rerun some of the paper's experiments, those scripts automatically add the correct path.
-3. You may also need to add an empty file in /johndoe/projects/ called `__init__.py`.
+3. You may also need to add an empty file in `/johndoe/projects/` called `__init__.py`.
 4. You can now import the models in your code, e.g.
 ```
 from BNMTF_ARD.code.models.nmf_np import nmf_np
