@@ -6,8 +6,9 @@ This project contains an implementation of the Bayesian non-negative matrix fact
 #### Paper abstract
 In this paper, we study the trade-offs of different inference approaches for Bayesian matrix factorisation methods, which are com- monly used for predicting missing values, and for finding patterns in the data. In particular, we consider Bayesian nonnegative variants of matrix factorisation and tri-factorisation, and compare non-probabilistic infer- ence, Gibbs sampling, variational Bayesian inference, and a maximum- a-posteriori approach. The variational approach is new for the Bayesian nonnegative models. We compare their convergence, and robustness to noise and sparsity of the data, on both synthetic and real-world datasets. Furthermore, we extend the models with the Bayesian automatic rele- vance determination prior, allowing the models to perform automatic model selection, and demonstrate its efficiency.
 
-#### Corresponding authors
-**Thomas Brouwer**, **Jes Frellsen**, **Pietro Lio'**. Contact: tab43@cam.ac.uk / thomas.a.brouwer@gmail.com.
+#### Authors
+Thomas Brouwer, Jes Frellsen, Pietro Lio'. 
+Contact: tab43@cam.ac.uk / thomas.a.brouwer@gmail.com.
 
 ## Installation 
 If you wish to use the matrix factorisation models, or replicate the experiments, follow these steps. Please ensure you have Python 2.7 (3 is currently not supported). 
