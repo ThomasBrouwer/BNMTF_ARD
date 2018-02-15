@@ -51,7 +51,7 @@ def add_noise(true_R,tau):
 ##########
 
 if __name__ == "__main__":
-    output_folder = project_location+"BNMTF_ARD/data_toy/bnmf/"
+    output_folder = project_location+"BNMTF_ARD/data/toy/bnmf/"
 
     I,J,K = 100, 80, 10 #20, 10, 5 #
     fraction_unknown = 0.1

@@ -117,3 +117,22 @@ plt.plot(mus,exp_exp,label='Exp')
 plt.plot(mus,exp_tn,label='TN')
 plt.legend()
 '''
+
+'''
+# Plot pdf of TN. 
+mu = 0
+tau = 1.
+std = 1./math.sqrt(tau)
+myclip_a = 0
+
+a, b = (myclip_a - mu) / std, numpy.inf
+x_range = numpy.linspace(-4,4,1000)
+plt.figure(figsize=(12,12))
+plt.plot(x_range, truncnorm.pdf(x_range, a, b, loc = mu, scale = std), linewidth=5)
+plt.xlabel("x", fontsize=35)
+plt.ylabel("p(x)", fontsize=35)
+plt.xticks(numpy.arange(-10,10,1), fontsize=20)
+plt.yticks(numpy.arange(0,1,0.2), fontsize=20)
+plt.ylim(0,0.9)
+plt.xlim(-3.5, 3.5)
+'''
