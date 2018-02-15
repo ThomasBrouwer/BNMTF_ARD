@@ -2,8 +2,8 @@
 Methods for plotting the distribution of the drug sensitivity datasets.
 '''
 
-project_location = "/home/tab43/Documents/Projects/libraries/" # "/Users/thomasbrouwer/Documents/Projects/libraries/"
-import sys
+import sys, os
+project_location = os.path.dirname(__file__)+"/../../../../"
 sys.path.append(project_location)
 
 from BNMTF_ARD.data.drug_sensitivity.load_data import load_gdsc_ic50
