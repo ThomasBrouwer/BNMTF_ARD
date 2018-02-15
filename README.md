@@ -11,7 +11,7 @@ In this paper, we study the trade-offs of different inference approaches for Bay
 
 ## Installation 
 If you wish to use the matrix factorisation models, or replicate the experiments, follow these steps. Please ensure you have Python 2.7 (3 is currently not supported). 
-1. Clone the project to your computer, by running `git clone https://github.com/ThomasBrouwer/BNMTF.git` in your command line.
+1. Clone the project to your computer, by running `git clone https://github.com/ThomasBrouwer/BNMTF_ARD.git` in your command line.
 2. In your Python script, add the project to your system path using the following lines.  
    
    ``` 
@@ -19,11 +19,11 @@ If you wish to use the matrix factorisation models, or replicate the experiments
    import sys
    sys.path.append(project_location) 
    ```
-   For example, if the path to the project is /johndoe/projects/BNMTF/, use `project_location = /johndoe/projects/`.
+   For example, if the path to the project is /johndoe/projects/BNMTF_ARD/, use `project_location = /johndoe/projects/`.
    If you intend to rerun some of the paper's experiments, make sure to change this variable appropriately in the scripts you are running.
 3. You can now import the models in your code, e.g.
 ```
-from BNMTF.code.models.nmf_np import NMF
+from BNMTF_ARD.code.models.nmf_np import NMF
 model = NMF(R=numpy.ones((4,3)), M=ones((4,3)), K=2)
 model.initialise()
 model.train(iterations=10)
@@ -105,3 +105,6 @@ The results and plots for the experiments are stored in this folder, along with 
 
 ### /tests/
 py.test unit tests for the code and classes in **/code/**. To run the tests, simply `cd` into the /tests/ folder, and run `pytest` in the command line.
+
+### /images/
+The images at the top of this README.
