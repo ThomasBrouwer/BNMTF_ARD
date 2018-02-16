@@ -35,7 +35,7 @@ model.train(iterations=10)
 You can find good examples of the models running on data in the [convergence experiment on the toy data](./experiments/experiments_toy/convergence/), e.g. [nonnegative matrix factorisation with Gibbs sampling](./experiments/experiments_toy/convergence/nmf_gibbs.py).
 
 ## Citation
-If this project was useful for your research, please consider citing it,
+If this project was useful for your research, please consider citing our [paper](https://arxiv.org/abs/1707.05147).
 > Thomas Brouwer, Jes Frellsen, and Pietro Lió (2017). Comparative Study of Inference Methods for Bayesian Nonnegative Matrix Factorisation. Proceedings of the European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases (ECML PKDD 2017).
 ```
 @inproceedings{Brouwer2017b,
