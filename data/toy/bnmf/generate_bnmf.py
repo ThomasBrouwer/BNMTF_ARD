@@ -57,7 +57,7 @@ if __name__ == "__main__":
     fraction_unknown = 0.1
     alpha, beta = 1., 1.
     lambdaU = numpy.ones((I,K))
-    lambdaV = numpy.ones((I,K))
+    lambdaV = numpy.ones((J,K))
     tau = alpha / beta
     
     (U,V,tau,true_R,R) = generate_dataset(I,J,K,lambdaU,lambdaV,tau)
